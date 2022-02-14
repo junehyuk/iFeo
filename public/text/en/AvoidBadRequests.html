@@ -1,0 +1,22 @@
+<p>Sometimes your HTML or CSS will request a resource like an image or a html file that doesn't exist. When this happens, it makes the browser and server make more round trips that serve no purpose (because the thing being requested isn't there).</p>
+<p>If it were a conversation it would go something like:<br> 
+<br>
+<strong>browser - "I need this image"<br> 
+server- "I don't have that image"<br> 
+browser - "are you sure? this document says you have it."<br> 
+server - "well, I don't"</strong><br><br> 
+These requests really slow down your webpages. Not only does it cause more pointless round trips, it may also be causing more DNS look ups which could even further slow down your page.</p>
+<p>It happens more often than you think. An example that has happened to me more than once is where I am making a website from a template, and I change some things then discover later that my CSS file is calling for something I am not using at all (like a background image).</p>
+
+
+
+<h2>404 error message</h2> 
+<p>We have all likely seen a 404 error page when we follow a link as we surf the web.</p><p>When a bad request is made a user will receive the 404 or not found error. This error is a HTTP standard response code indicating that the client was able to communicate with the server, but the server could not find the requested file.</p>
+<p>The web server will typically generate a "404 Not Found" web page when a user attempts to follow a broken or dead link.
+</p><h2>How to Detect Bad Requests</h2> 
+<p>Many times bad requests are quite obvious, like when an image that is supposed to be there is not. Other times they are in the background where they are not immediately apparent.</p><p>There are sometimes no visual indication of bad requests, so it is a good idea to always remove unused CSS and to be reasonably familiar with your pages and what resources they are using.</p><p>
+Using page speed tools to examine your pages is the best way to know if your file is calling non existent resources. The <a href="https://developers.google.com/speed/pagespeed/insights">Google Page Speed tool</a> can display these bad requests.</p>
+<h2>How to fix Bad Requests</h2>
+
+<p>Fixing bad requests is alot easier than finding them. If you find you have one or more, just remove the code that is calling the resource, or replace the missing resource. For example if your webpage is calling for an image, but the image isn't there, just change the image "src" so that it points to the image you want or remove the image entirely. </p>
+

@@ -1,0 +1,95 @@
+@(menu: String, req_project_id: Int)(content: Html)(implicit request: play.api.mvc.Request[Any])
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Feedle Web Booster - @menu</title>
+        <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+        <link href="@routes.Assets.at("stylesheets/tool.css")" rel="stylesheet">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+
+        <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="@routes.Tool.index">Feedle Web Booster</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                @if(req_project_id==0){
+                                    바로가기
+                                } else { @Tool.getProjectDomain(req_project_id) }
+                                &nbsp;<b class="caret"></b></a>
+                              <ul class="dropdown-menu">
+
+                                @if(request.session.get("user")!= None){
+                                   <li class="dropdown-header">My Website</li>
+                                    @for(projectItem <- Tool.listProject(SessionManager.getUserId(request.session.get("user").get))) {
+                                        <li><a href="@routes.Tool.main(projectItem.projectId, "dashboard")">@projectItem.domain</a></li>
+                                    }
+                                    <li class="divider"></li>
+                                }
+
+                                <li class="dropdown-header">Feedle Website</li>
+                                <li><a href="@routes.Application.index()">Offical Website</a></li>
+                                <li><a href="http://blog.feedle.kr">Blog</a></li>
+                                <li><a href="https://www.facebook.com/feedlekr">Facebook</a></li>
+                            </ul>
+                        </li> <!--DropDown!-->
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
+                            <ul class="dropdown-menu">
+
+                            @if(request.session.get("user")!= None) {
+                                <li><a href="@routes.Member.modify">회원정보 수정</a></li>
+                                <li><a href="@routes.Member.logout">로그아웃</a></li>
+                            } else {
+                                <li><a href="@routes.Member.login()">로그인</a></li>
+                                <li><a href="@routes.Member.register()">회원가입</a></li>
+                            }
+                            </ul>
+                        </li> <!--DropDown!-->
+
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div>
+        </div>
+
+        <div class="wrap">
+
+            @content
+
+        </div> <!--사이트 끝!-->
+
+
+    </body>
+</html>

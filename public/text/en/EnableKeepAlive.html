@@ -1,0 +1,42 @@
+<p>Keep-alive is a bit of communication between the web server and the web browser that says "you can grab more than just one file". <br>In order to display webpages a browser must request files from a web server somewhere. There is a brief communication where the browser asks for a file and the web server says yes or no.</p>
+
+<p>If the browser and server had to have this communication for each file transferred then the entire affair would take longer than if the server could just say "grab whatever files you need".</p>
+
+
+
+<p>When a web browser wants to display a webpage it must first get the HTML file. It will then read the HTML file and request more files that the HTML references like CSS or images or whatever file the HTML is requesting. When keep alive is not enabled this can add alot of time to the downloading of a webpage. Webpages are often a collection of many files and if a new connection (the brief communication) has to be opened for each and everyone of those files it could take significantly longer to display that webpage.</p>
+<p>More officially the definition of HTTP keep-alive would be something like "a method to allow the same tcp connection for HTTP conversation instead of opening new one with each new request".
+
+</p><p>Some people mistakenly believe that they do not have to worry about this because HTTP connections nowadays are by default persistent (keep-alive enabled). While this is true, many people use shared hosting environments or web servers that may close connections unbeknownst to the user. This is done for performance reasons and since millions of pages are hosted in shared environments, there is a definite need to determine if your connections are keep-alive.</p>
+
+<h2>How to enable keep-alive</h2>
+
+<p>Since keep-alive is default, there is some reason your pages aren't using it. This means your webserver is configured to close connections or your webhost has disabled it. You can still change it though. There are many scenarios, and I will try to cover the ones that are most common.</p>
+<p>To enable keep alive you must add a HTTP header to your requests. If you are not seeing keep alive enabled it is likely because when you are requesting a page or resource your HTTP headers are saying "connection: close". This will disable keep-alive and tells a server to shut the connection as soon as it is done loading that one file. If we change that to "connection: keep-alive" it will keep the connection open so all files can be retrieved before closing the connection.</p>
+<h2>Change HTTP header through .htaccess</h2>
+
+<p>Keep-alive is enabled by explicitly requesting it via your HTTP header. Doing so will override any higher settings. If you do not have access to your webserver config file you can add HTTP headers yourself using an .htaccess file. (please know that any changes to your .htaccess file can mess alot of things up; you should <a href="http://www.feedthebot.com/pagespeed/htaccess.html">read this</a> before you change any setting unless you are familiar with .htaccess)</p>
+<div class="code">
+<p>&lt;ifModule mod_headers.c&gt;
+    Header set Connection keep-alive
+&lt;/ifModule&gt;</p>
+</div>
+<p>Adding this to your .htaccess file will add keep alive headers to your requests, which will over ride most webserver or host limitations.</p>
+
+<h2>Enable keep-alive in Apache</h2>
+
+<p>If you are able to access your Apache config file, you can turn on keep-alive there. The applicable sections are shown below</p>
+<div class="code"><p><br>#<br># KeepAlive: Whether or not to allow persistent connections (more than<br># one request per connection). Set to "Off" to deactivate.<br>#<br>KeepAlive On<br><br>#<br># MaxKeepAliveRequests: The maximum number of requests to allow<br># during a persistent connection. Set to 0 to allow an unlimited amount.<br># We recommend you leave this number high, for maximum performance.<br>#<br>MaxKeepAliveRequests 100<br><br>#<br># KeepAliveTimeout: Number of seconds to wait for the next request from the<br># same client on the same connection.<br>#<br>KeepAliveTimeout 100</p><br></div>
+
+
+<h2>Enable keep-alive in NGINX</h2>
+
+
+<p>Keep alive issues can be tackled using the <a href="http://wiki.nginx.org/HttpCoreModule">HttpCoreModule</a>. there is a specific directive you should look out for... "keepalive_disable". If you see this make sure you know why it is disabling keep-alive before removing.</p>
+
+<h2>Enable keep-alive in Litespeed</h2>
+
+<p>Keep-alive is default but your server may be using what is called "smart keep-alive". This is a setting within Litespeed that is specifically for high volume websites. When this setting is on it will appear to pagespeed tools that keep-alive is disabled.</p>
+
+<h2>Smart Keep Alive</h2>
+<p>Smart keep alive will request the initial file (the HTML file) with a connection close in the HTTP header. It will then request all the other files (css, js, images, etc.) with keep alive enabled. This allows more users to be able to connect at once when there are many concurrent requests. Tip: Unless you are indeed a high traffic site you can disable smart keep alive in the config and once you do so all of your connections will use keep alive.</p>

@@ -1,0 +1,44 @@
+
+<h1>Inline small CSS</h1>
+<p> Inlining CSS simply means putting your CSS into your HTML file instead of keeping it in an external CSS file. This reduces the amount of files the browser has to download prior to displaying your web page. If you are using an external CSS file, the browser must first load your HTML file, then download your CSS file.</p>
+</div><div class="unit new">
+<p>After you inline your CSS the browser only has to download your HTML file. Downloading one file is faster than downloading two.</p>
+<h2>How to inline CSS</h2>
+<p>You just copy the contents of your external CSS file and paste them between style tags in the head section of your HTML file.</p><p>
+It looks like this:</p>
+<div class="code">
+<p>&lt;style type="text/css"&gt;<br>
+&lt;/style&gt;</p>
+</div>
+
+<p>The important thing to remember is to place this info in the head section of your HTML. You must also use the proper HTML style tags. Copy and paste the contents of your external CSS file inbetween the style tags:</p>
+
+<div class="code">
+<p>&lt;style type="text/css"&gt;<br>
+body{margin:0;padding:0;background:#FFFFFF;font-family:Arial, Helvetica, sans-serif;font-size:15px;color:#555;}<br>
+h1, h2, h3{margin:0;padding:0;font-weight:normal;color:#555;}<br>
+h1{font-size:3.5em;}<br>
+h2{font-size:2.4em;}<br>
+h3{font-size:1.6em;}<br>
+p, ul, ol{margin-top:0;line-height:180%;}<br>
+a{text-decoration:underline;color:#FF2929;}<br>
+&lt;/style&gt;</p>
+</div>
+
+
+<h2>What does this do?</h2>
+
+<p>Putting your CSS into the head section of your HTML will save the web browser a round trip to the server, since you are no longer asking for a separate external file for the browser to load to see your CSS.</p>
+
+<script>
+(function(){function r(e){var t=0;if(e.offsetParent){do t+=e.offsetTop;while(e=e.offsetParent);return t}}var e=window.addEventListener||function(e,t){window.attachEvent("on"+e,t)},t=window.removeEventListener||function(e,t,n){window.detachEvent("on"+e,t)},n={cache:[],mobileScreenSize:500,addObservers:function(){e("scroll",n.throttledLoad),e("resize",n.throttledLoad)},removeObservers:function(){t("scroll",n.throttledLoad,!1),t("resize",n.throttledLoad,!1)},throttleTimer:(new Date).getTime(),throttledLoad:function(){var e=(new Date).getTime();e-n.throttleTimer>=200&&(n.throttleTimer=e,n.loadVisibleImages())},loadVisibleImages:function(){var e=window.pageYOffset||document.documentElement.scrollTop,t=window.innerHeight||document.documentElement.clientHeight,i={min:e-300,max:e+t+300},s=0;while(s<n.cache.length){var o=n.cache[s],u=r(o),a=o.height||0;if(u>=i.min-a&&u<=i.max){var f=o.getAttribute("data-src-mobile");o.onload=function(){this.className="lazy-loaded"},f&&screen.width<=n.mobileScreenSize?o.src=f:o.src=o.getAttribute("data-src"),o.removeAttribute("data-src"),o.removeAttribute("data-src-mobile"),n.cache.splice(s,1);continue}s++}n.cache.length===0&&n.removeObservers()},init:function(){document.querySelectorAll||(document.querySelectorAll=function(e){var t=document,n=t.documentElement.firstChild,r=t.createElement("STYLE");return n.appendChild(r),t.__qsaels=[],r.styleSheet.cssText=e+"{x:expression(document.__qsaels.push(this))}",window.scrollBy(0,0),t.__qsaels}),e("load",function r(){var e=document.querySelectorAll("img[data-src]");for(var i=0;i<e.length;i++){var s=e[i];n.cache.push(s)}n.addObservers(),n.loadVisibleImages(),t("load",r,!1)})}};n.init()})()
+</script>
+
+<h2>Pros and Cons</h2>
+
+<p>While this does save a round trip to the server (good) it also means that your CSS file will no longer be cached (bad).</p>
+<p>When you use external CSS files the entire file is cached (remembered) by the browser so it doesn't have to take the same steps over and over when a user goes to another page on your website. When you inline your CSS, this does not occur and the CSS is read and acted upon again when a visitor goes to another page of your website. This does not matter if your CSS is small and simple. If your CSS is large and complex, as they often tend to be, then you may want to consider that the caching of your CSS is a better choice.</p>
+<p>Many people inline the CSS of their homepage or landing pages that have to load super quick to be effective and then use external CSS for the rest of their site.</p>
+<p>Tip: Use the <a href="http://www.feedthebot.com/tools/css-delivery/">CSS delivery tool</a> which will explain how CSS is being used by a certain page.</p>
+
+

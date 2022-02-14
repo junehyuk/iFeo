@@ -1,0 +1,32 @@
+@()(implicit request: play.api.mvc.Request[Any])
+
+@for(projectItem <- Tool.listProject(SessionManager.getUserId(request.session.get("user").get))) {
+    <a href="@routes.Tool.main(projectItem.projectId,"dashboard")">
+        <div class="weblist">
+            <div class="weblist_head">
+                <h4>@projectItem.title</h4>
+                <h5>@projectItem.domain</h5>
+            </div>
+            <div class="weblist_body">
+                <div class="loading" id="loading_@projectItem.projectId"><img src="@routes.Assets.at("images/loading.gif")"></div>
+                <div class="screenshot" style="display:none;" id="screen_@projectItem.projectId"><img src="http://www.webpagetest.org/result/@Tool.thumbnailImage(projectItem.wptTestId.get)/1_screen_thumb.jpg" onload="hiddenload(@projectItem.projectId)"></div>
+            </div>
+        </div>
+    </a>
+}
+
+
+<script type="text/javascript">
+
+function hiddenload(objId){
+    $("#loading_"+objId ).hide();
+    $('#screen_'+objId ).show();
+}
+
+
+</script>
+
+
+
+
+

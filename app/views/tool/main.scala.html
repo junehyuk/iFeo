@@ -1,0 +1,42 @@
+@(req_project_id: Int, menu: String)(content: Html)
+
+
+    <div id="left_menu"> <!--왼편메뉴!-->
+
+        <div class="navi">
+            <ul class="navi_s">
+                <li class="n01"><a href="@routes.Tool.main(req_project_id,"dashboard")"><span>Dashboard</span></a></li>
+                <li class="n02"><a href="@routes.Tool.main(req_project_id,"optimize")"><span>Optimize</span></a></li>
+                <li class="n03"><a href="@routes.Tool.main(req_project_id,"pages")"><span>Pages</span></a></li>
+                <li class="n04"><a href="@routes.Tool.main(req_project_id,"resource")"><span>Resource</span></a></li>
+                <li class="n05"><a href="@routes.Tool.main(req_project_id,"setting")"><span>Setting</span></a></li>
+            </ul>
+        </div>
+
+
+        <style>
+            @if(menu=="dashboard"){
+                .navi_s .n01 a {background:url(@routes.Assets.at("images/tool_menu_rollover.png")) no-repeat;}
+                .navi .n01 a {width:94px; background-position:0px 0px;}
+            }
+            @if(menu=="optimize"){
+                .navi_s .n02 a {background:url(@routes.Assets.at("images/tool_menu_rollover.png")) no-repeat;}
+                .navi .n02 a {width:94px; background-position:0px -100px;}
+            }
+            @if(menu=="pages"){
+                .navi_s .n03 a {background:url(@routes.Assets.at("images/tool_menu_rollover.png")) no-repeat;}
+                .navi .n03 a {width:94px; background-position:0px -200px;}
+            }
+            @if(menu=="resource"){
+                .navi_s .n04 a {background:url(@routes.Assets.at("images/tool_menu_rollover.png")) no-repeat;}
+                .navi .n04 a {width:94px; background-position:0px -300px;}
+            }
+            @if(menu=="setting"){
+                .navi_s .n05 a {background:url(@routes.Assets.at("images/tool_menu_rollover.png")) no-repeat;}
+                .navi .n05 a {width:94px; background-position:0px -395px;}
+            }
+        </style>
+
+    </div><!--왼편메뉴끝!-->
+
+    @content

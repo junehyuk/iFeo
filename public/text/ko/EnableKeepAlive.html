@@ -1,0 +1,73 @@
+<br>
+	브라우저와 서버와의 연결을 지속시켜 놓으므로써 추가적인 파일 요청에 즉각 대응받으며 속도가 향상 될 수 있습니다.<br><br>
+
+TCP KEEP-ALIVE는 옵션으로써 컨셉은 심플 합니다.<br>
+A – B가 서로 Connection이 Establish된 상태에서 (3-handshake)<br>
+지정된 시간(OS 설정 값 또는 어플리케이션 설정) 동안 서로<br>
+패킷 교환(Exchange)이 없을경우 payload가 없는 probe(프로토스 유닛 아님) 패킷을<br>
+보냅니다.<br>
+만약 정상일 경우 connection을 유지하고, 그렇지 않을 경우는 장애로<br>
+판단해서 본인 Connection도 close 합니다.<br>
+<br>
+그러면 Keep-Alive를 어떨때 사용하면 좋냐면..<br>
+<br>
+1. Checking for dead peers<br>
+<br>
+A – B가 연결된 경우 B시스템이 장애로 인해서 restart 될 경우<br>
+A의 keep-alive 설정에 의해서 probe 패킷을 보내면<br>
+B는 RST(Reset)을 응답 합니다.<br>
+<br>
+이럴 경우 B 시스템의 커넥션이 끊겼다는 것을 감지 할 수 있습니다.<br>
+<br>
+※ TCP 프로토콜 자체에서 장애 감지가 없기 때문에 Keepalive 옵션을<br>
+통해서 감지<br>
+<br>
+2. Preventing disconnection due to network inactivity<br>
+<br>
+만약<br>
+A -> NAT -> B 일경우<br>
+<br>
+NAT 또는 Proxy 서버는 커넥션들을 메모리에 캐싱하고 있음.<br>
+즉 제한된 사이즈만큼 queuing을 하는데<br>
+정책이 inactive된 것들 중에서 가장 오래된 커넥션을 지음.<br>
+<br>
+이런 현상은 주로 A,B 서버는 이상이 없는데 요청이<br>
+많을 경우 커넥션이 자꾸 끊기는 경우 발생.<br>
+<br>
+그래서 keep-alive를 통해서 inactive된 커넥션을<br>
+queue에 밀리지 않도록 상단으로 올려주는 효과를 통해서<br>
+disconnection을 방지<br>
+<br>
+※ 주의사항 지나친 keep-alive의 남발은 주기적으로 probe 데이터를<br>
+보내기 때문에 network에 불필요한 traffic를 유발함<br>
+<br>
+ <br>
+<br>
+그렇다면 HTTP Keep-Alive는 ?<br>
+<br>
+일단 결론적으로 말하면 TCP-KeepAlive 와 HTTP-KeepAlive는 전혀<br>
+다름.<br>
+<br>
+TCP는 OS에 제어, HTTP 어플리케이션(웹 서버) 제어.<br>
+<br>
+HTTP-KeepAlive는 HTTP/1.1 스펙 하지만 사실 클라이언트에서<br>
+하는게 없고 다 서버에서 담당.<br>
+<br>
+쿨라이언트-서버가 주어진 시간에 요청이 계속 들어 오면<br>
+커넥션 연장 만약 그렇지 않을 경우 서버에서 커넥션을 끊음.<br>
+<br>
+이런 이유는 매번 커넥션을 생성하면 성능이 떨어지기 때문<br>
+<br>
+서버에서 설정하면 클라이언트 해더에 아래와 같이 표시됨<br>
+<br>
+Keep-Alive: timeout=5, max=100<br>
+Connection: Keep-Alive<br>
+<br>
+두번 요청 하면<br>
+<br>
+Keep-Alive: timeout=5, max=99<br>
+Connection: Keep-Alive<br>
+<br>
+timeout : 단위는 초 즉 커넥션 유지 시간 5초<br>
+max는 : 위에서 보면 최초 100에서 두번째는 -1된 99. 즉, 아무리 keep-alive로 유지를 한다고<br>
+해도 허가된 요청수. 해당 요청수가 넘으면 reconnect<br>

@@ -1,0 +1,17 @@
+<b>overview</b><br><br>
+
+In order to load a page, the browser must parse the contents of all <code>&lt;script&gt;</code> tags, which adds additional time to the page load. By minimizing the amount of JavaScript needed to render the page, and deferring parsing of unneeded JavaScript until it needs to be executed, you can reduce the initial load time of your page.
+
+<div class="layout-2col-content">
+    <h4>Details from Google</h4>
+
+<p>There are several techniques that can be used to defer parsing of JavaScript. The simplest and preferred technique is to simply <a href="/defer-loading-of-javascript.html">Defer loading of JavaScript</a> until it is needed. A second technique is to use the <a href="/prefer-asynchronous-resources.html">&lt;script async&gt;</a> attribute where appropriate, which prevents parsing from blocking the initial page load by deferring it until the browser's UI thread is not busy doing something else. If neither of these techniques is suitable, there are some additional techniques commonly used in mobile applications, described below:</p>
+
+<p>When building mobile applications, it can be necessary to load all of the JavaScript needed by an application up front, so the application can continue to work when the user is offline. In this case, some applications, such as mobile Gmail, find it useful to <a href="http://googlecode.blogspot.com/2009/09/gmail-for-mobile-html5-series-reducing.html">load JavaScript in comments</a> and later <code>eval()</code> the JavaScript when it is needed. This approach guarantees that all JavaScript is loaded during the initial page load, while not requiring that JavaScript to be parsed.</p>
+
+<p>An alternative to storing code in comments is storing code in JavaScript string literals. When using this technique, the JavaScript is only parsed when needed, again by calling <code>eval()</code> on the string literal. This technique also allows an application to load JavaScript early, but defer parsing until it is needed.</p>
+
+<p>Note that moving your <code>&lt;script&gt;</code> tags to the end of the page is sub-optimal, since the browser will continue to show a busy indicator until the page has finished parsing this JavaScript. Users may wait until the page load indicator shows that the page load is complete before interacting with the page, so it is important to load JavaScript in a way that minimizes the time it takes for the browser to indicate that the page load is complete.</p>
+
+<p>In our own tests conducted in early 2011, we found that on modern mobile devices, each additional kilobyte of JavaScript adds about 1ms of parse time to the overall page load time. So 100kB of JavaScript included in the initial page load would add 100ms of load time for your users. Because JavaScript must be parsed on every visit to a page, this added load time will be part of every page load, whether loaded from the network, via the browser cache, or in HTML5 offline mode.</p>
+  </div>

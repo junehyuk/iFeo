@@ -1,0 +1,117 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+POST        /csssprite/makeimage/*id             controllers.CssSpriteController.create_sprite(id:Int)
+
+#웹사이트 부분. 아마 html만 사용해도 문제 없을 것으로 예상됨.
+GET         /                                    controllers.Application.index
+
+# 나의 웹사이트 관리 화면
+GET         /tool/                               controllers.Tool.index
+POST        /tool/                               controllers.Tool.addProject()
+
+# 웹사이트 최적화 및 설정 페이지
+#GET         /tool/*id/dashboard                controllers.Tool.dasboard(id:Int)
+#GET         /tool/*id/optimize                 controllers.Tool.optimize(id:Int)
+#GET         /tool/*id/pages                    controllers.Tool.pages(id:Int)
+#GET         /tool/*id/resource                 controllers.Tool.resource(id:Int)
+#GET         /tool/*id/setting                  controllers.Tool.setting(id:Int)
+
+# Backend
+
+POST        /tool/*id/resource                   controllers.Tool.changeManagerResource(id:Int)
+POST        /tool/*id/setting                    controllers.Tool.changeManagerSetting(id:Int)
+
+GET         /pagespeed/*key                      controllers.Tool.getPageSpeedJson(key:String)
+GET         /webpagetest/*key                    controllers.Tool.getWebpagetestXML(key:String)
+
+POST        /tool/*id/pages/add                  controllers.Tool.addPage(id:Int)
+POST        /tool/*id/pages/remove               controllers.Tool.removePage(id:Int)
+GET         /tool/*id/pages/list                 controllers.Tool.listPage(id:Int)
+GET         /tool/*id/optimize/list              controllers.Tool.getOptimizeList(id:Int)
+
+GET         /tool/*id/resource/list              controllers.Tool.getAllWebContent(id:Int)
+
+GET         /tool/*id/resource/iscdn             controllers.Tool.getAllWebContentWithCdn(id:Int)
+GET         /tool/*id/resource/isproxy           controllers.ProxyFileSettingController.getProxyCacheSettings(id:Int)
+GET         /tool/*id/resource/iscache           controllers.ProxyFileSettingController.getCacheControlSettings(id:Int)
+GET         /tool/*id/resource/isauto            controllers.ProxyFileSettingController.getAutoProxySettings(id:Int)
+GET         /tool/*id/resource/isautoinfo        controllers.ProxyFileSettingController.getAutoProxySettingsInfo(id:Int)
+
+
+POST        /tool/*id/resource/cache             controllers.ProxyFileSettingController.setCacheControlSettings(id:Int)
+POST        /tool/*id/resource/proxycache        controllers.ProxyFileSettingController.setProxyCacheSettings(id:Int)
+POST        /tool/*id/resource/auto              controllers.ProxyFileSettingController.setAutoProxySettings(id:Int)
+
+
+POST        /tool/*id/resource/cdnupload         controllers.CdnController.cdnupload(id:Int)
+POST        /tool/*id/resource/merge             controllers.MergeController.create_merge(id:Int)
+POST        /tool/*id/resource/minify            controllers.MinifyController.create_minify(id:Int)
+POST        /tool/*id/resource/quality           controllers.ImageController.create_optimize(id:Int)
+
+GET         /api/pages/after/*pid                controllers.PageController.getChangedPageCode(pid:Int)
+GET         /api/pages/before/*pid               controllers.PageController.getOriginPageCode(pid:Int)
+GET         /api/pages/status/*pid               controllers.PageController.waitPageLoaded(pid:Int)
+GET         /api/pages/refresh/*pid              controllers.PageController.refreshPage(pid:Int)
+
+#GET         /tool/*id/pages/before/*pId        controllers.Tool.pageAfter(id:Int,pId:Int)
+#GET         /tool/*id/pages/after/*pId         controllers.Tool.pageBefore(id:Int,pId:Int)
+
+POST        /tool/*id/setting/remove             controllers.Tool.removeProject(id:Int)
+POST        /tool/*id/setting/save               controllers.Tool.saveProject(id:Int)
+
+GET         /tool/*id/pages/refresh              controllers.Tool.refreshProject(id:Int)
+GET         /tool/*id/pages/removeproxy          controllers.Tool.removeProxyCache(id:Int)
+GET         /tool/*id/pages/removecdn            controllers.Tool.removeCDN(id:Int)
+
+#GET         /tool/*id/optimize/*pid/         controllers.Tool.pages(id:Int)
+#GET         /tool/*id/optimize_apply/*pid/   controllers.Tool.pages(id:Int)
+#GET         /tool/*id/pages/*pid/            controllers.Tool.pages(id:Int)
+
+#POST        /tool/*id/resource               controllers.Tool.setting(id:Int)
+#POST        /tool/*id/setting                controllers.Tool.setting(id:Int)
+
+GET         /tool/*id/:page                      controllers.Tool.main(id:Int,page:String)
+
+
+# 회원관리 부분
+GET         /member/login                        controllers.Member.login
+POST        /member/login                        controllers.Member.loginCheck
+
+GET         /member/register                     controllers.Member.register
+POST        /member/register                     controllers.Member.registerUpdate
+GET         /member/modify                       controllers.Member.modify
+POST        /member/modify                       controllers.Member.modifyUpdate
+GET         /member/logout                       controllers.Member.logout
+
+# static 파일
+GET         /assets/*file                        controllers.Assets.at(path="/public", file)
+
+
+GET         /pagetest                            controllers.ApplicationJH.pagetest()
+GET         /listproject                         controllers.ApplicationJH.listproject()
+
+
+GET         /sprite/refresh/*id                  controllers.PageController.refreshPage(id:Int)
+POST        /sprite/create/*id                   controllers.CssSpriteController.create_sprite(id:Int)
+GET         /sprite/info/*id                     controllers.CssSpriteController.spritePresetInformation(id:Int)
+GET         /content/*pid/*filename              controllers.ApplicationYJ.getContent(pid:Int, filename)
+GET         /video/*filename                     controllers.Tool.getVideo(filename)
+GET         /isvideo/*filename                   controllers.Tool.isVideo(filename)
+
+GET         /yj                                  controllers.ApplicationYJ.index
+GET         /test/*oid                           controllers.ApplicationYJ.test(oid:Int)
+
+#GET         /ck                             controllers.ApplicationCK.test
+#GET         /refresh/*id                    controllers.PageController.refreshPage(id:Int)
+#GET         /spriteinfo/*id                 controllers.CssSpriteController.spritePresetInfomation(id:Int)
+
+#GET         /show                       controllers.DataBaseExampleController.showObjectTable
+#POST        /insert                     controllers.DataBaseExampleController.insertObjectTable
+#GET         /delete/*id                 controllers.DataBaseExampleController.deleteObjectTable(id:Int)
+
+# Map static resources from the /public folder to the /assets URL path
+
+    

@@ -1,0 +1,28 @@
+<h3>Overview</h3>
+<p>Many pages, especially mobile pages, redirect users to a different
+URL, for instance from <code>www.example.com</code>
+to <code>m.example.com</code>. Making this redirect cacheable by the
+user's browser can speed up page load times for repeat visitors to a
+site.</p>
+<h3>Details</h3>
+<p>While the best practice with redirects is to remove them wherever
+possible, it can sometimes be difficult to eliminate landing page
+redirects, especially redirects to mobile-specific sites. For
+instance, the mobile version of a site may be served from a different
+web server, which can require redirecting to a different hostname. In
+these cases, it's important to make the redirect to the
+mobile-specific site cacheable, to reduce page load times for repeat
+visitors. If the mobile version of your web site is served from the
+same web server as the desktop version of your site, you should
+instead eliminate mobile-specific redirects and serve from the same
+URL as your desktop page.</p>
+<h3>Recommendations</h3>
+<p>Mobile-specific redirects must be privately cacheable, in order to
+prevent proxies from serving the mobile redirect to non-mobile
+users. We recommend using a 302 redirect with a cache lifetime of one
+day. The redirect should include a <code>Vary: User-Agent</code>
+header as well as a <code>Cache-Control: private</code> header. These
+headers prevent proxies from serving mobile-specific redirects to
+non-mobile users. You may also want to include an <code>Expires</code>
+header in the past, to prevent old HTTP/1.0 proxies from caching these
+redirects and serving them to non-mobile users.</p>

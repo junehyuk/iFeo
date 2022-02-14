@@ -1,0 +1,23 @@
+<h4>Overview</h4>
+    Keeping cookies and request headers as small as possible ensures that an HTTP request can fit into a single packet.
+<div class="clear text-content">
+  <div class="layout-2col-content">
+    <h4>Details from Google</h4>
+
+<p>Ideally, an HTTP request should not go beyond 1 packet. The most widely used networks limit packets to approximately 1500 bytes, so if you can constrain each request to fewer than 1500 bytes, you can reduce the overhead of the request stream. HTTP request headers include:</p>
+
+<ul>
+<li>Cookies: For resources that must be sent with cookies, keep the cookie sizes to a bare minimum.  To keep the request size within this limit, no one cookie served off any domain should be more than 1000 bytes. We recommend that the average size of cookies served off any domain be less than 400 bytes.</li>
+<li>Browser-set fields: Many of the header fields are automatically set by the user agent, so you have no control over them.</li>
+<li>Requested resource URL (GET and Host fields). URLs with multiple parameters can run into the thousands of bytes. Try to limit URL lengths to a few hundred bytes at most.</li>
+<li>Referrer URL.</li>
+
+
+<h4>recommends:</h4>
+      <h5>Use server-side storage for most of the cookie payload.</h5>
+
+<p>Store only a unique identifier in the cookie, and key the ID to data stored at the server end. You can use server-side cookies for both session and persistent cookies by specifying the expiry date/time on the cookie.</p>
+
+<h5>Remove unused or duplicated cookie fields.</h5>
+
+<p>The fields set by a cookie at the top-level path of a domain (i.e. /) are inherited by the resources served off all paths below that domain. Therefore, if you are serving different applications on different URL paths, and you have a field that applies globally to all applications on a domain - for example, a user's language preference - include that field in the cookie set at the top-level domain; don't duplicate the field in cookies set for subpaths. Conversely, if a field only applies to an application served from a subpath - for example, a UI setting - don't include that field in the top-level cookie and force the unused data to be passed needlessly for other applications.</p>

@@ -1,0 +1,548 @@
+@(req_project_id: Int, magic:String)
+<body oncontextmenu='return false' ondragstart='return false'  onselectstart='return false'></body>
+<script src="@routes.Assets.at("javascripts/juneresource.js")"></script>
+
+
+
+<style type="text/css">
+    .oplist_detailTable {padding-top:5px; margin-bottom:0px; word-break: break-all; font-size:9pt;}
+    .oplist_detailTable td {padding-top:0px;}
+    .splitImageListImg {max-height:45px; max-width:45px;}
+    .cssSpriteTd{cursor:pointer;}
+</style>
+
+
+<div id="resource_contents" style="padding:0px; overflow:hidden; min-width:680px;"><!--내용!-->
+
+    <div style="width:100%; height:65px; background:#f4f3f4; padding:15px;">
+        <div class="btn-group">
+            <button type="button" id="filterButton0" onclick="filterSelect(0);" class="btn btn-default active"><span class="glyphicon glyphicon glyphicon-th"></span> ALL</button>
+            <button type="button" id="filterButton1" onclick="filterSelect(1);" class="btn btn-default"><span class="glyphicon glyphicon-picture"></span> IMAGE</button>
+            <button type="button" id="filterButton2" onclick="filterSelect(2);" class="btn btn-default"><span class="glyphicon glyphicon-align-justify"></span> JavaScript/CSS</button>
+            <button type="button" id="filterButton3" onclick="filterSelect(3);" class="btn btn-default"><span class="glyphicon glyphicon-hdd"></span> Feedle Storage</button>
+        </div>
+
+        <input type="checkbox" style="margin-left:15px;" id="allCheckbox" onclick="allCheck();"> 모두 선택
+
+
+        <div style="float:right">
+            <div class="form-group" style="width:190px;">
+                <input type="text" class="form-control" placeholder="Search" onkeyup="searchStart();" id="searchBox">
+            </div>
+        </div>
+    </div>
+
+
+    <div style="position:absolute; height:10px; background:url(@routes.Assets.at("images/shadow.png")); width:calc(100% - 95px);"></div>
+    <div style="overflow-y:scroll; overflow-x:hidden; height:calc(100% - 65px); padding-left:15px;">
+
+        <div class="alert alert-warning fade in" style="margin-top:25px; ; margin-right:15px;">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <strong>[TIP]</strong>&nbsp;마우스 오른쪽 버튼을 클릭하여 파일의 상세 정보를 확인할 수 있습니다.
+
+        </div>
+
+
+
+
+        <table cellpadding="0" cellspacing="0" width="100%" height="80%" id="loadingBox">
+            <tr>
+                <td width="100%" height="100%">
+                    <p align="center">
+                        <img src="@routes.Assets.at("images/loading.gif")" width="60" height="60"><br>
+                    </p>
+                </td>
+            </tr>
+        </table>
+
+        <div id="itemListView" style=""></div><!-- /row-->
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+</div><!--내용 끝!-->
+
+
+
+
+    <div id="resource_setting">
+
+        <div style="margin:10px;">
+
+
+            <div class="panel panel-default"  id="tab_itemList">
+                <div class="panel-heading">선택된 항목
+                    <div class="right_startBtn" style="float:right; margin-top:-5px;">
+                        <button type="button" class="btn btn-primary btn-sm" style="border-radius: 15px;" onclick="clearMyList();"> 비우기</button>
+                    </div>
+                </div>
+
+                <div class="panel-body" style="padding:0px; width:100%; height:150px; overflow-y:scroll;">
+                    <div style="padding:5px; text-align:center;" id="itemHelper"></div>
+                    <table id="itemHelperTable" class="table table-striped oplist_detailTable">
+                        <tbody></tbody>
+                    </table>
+
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+            <div class="panel panel-default" id="tab_cache">
+                <div class="panel-heading">Header Cache-Control
+                    <div class="right_startBtn" style="float:right; margin-top:-5px;">
+                        <button type="button" class="btn btn-primary btn-sm" style="border-radius: 30px;" onclick="finalCheck('cache');">적용</button>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <select class="form-control" id="cacheControlBox">
+                        <option value="0">비활성화</option>
+                        <option value="1">1일</option>
+                        <option value="3">3일</option>
+                        <option value="7">7일</option>
+                        <option value="31">31일</option>
+                    </select>
+                </div>
+            </div>
+
+
+
+            <div class="panel panel-default" id="tab_cdn" style="display:none;">
+                <div class="panel-heading">파일 CDN 설정
+                    <div class="right_startBtn" style="float:right; margin-top:-5px;">
+                        <button type="button" class="btn btn-primary btn-sm" style="border-radius: 30px;" onclick="finalCheck('cdn');">업로드</button>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="panel panel-default" id="tab_merge" style="display:none;">
+                <div class="panel-heading">JavaScript/CSS</div>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        Minify
+                        <div class="right_startBtn" style="float:right; margin-top:-2px;">
+                            <button type="button" class="btn btn-default btn-xs" onclick="finalCheck('minify');"><span class="glyphicon glyphicon-ok"></span> 만들기</button>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        Merge
+                        <div class="right_startBtn" style="float:right; margin-top:-2px;">
+                            <button id="mergeButton" type="button" class="btn btn-default btn-xs" onclick="finalCheck('merge');"><span class="glyphicon glyphicon-ok"></span> 만들기</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+
+
+            <div class="panel panel-default" id="tab_sprite" style="display:none;">
+                <div class="panel-heading">Image Split(CSS Sprite)
+                    <div class="right_startBtn" style="float:right; margin-top:-5px;">
+                        <button type="button" class="btn btn-primary btn-sm" style="border-radius: 30px;" onclick="cssSpriteLoad();">만들기</button>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+            <div class="panel panel-default"  id="tab_intel" style="display:none;">
+                <div class="panel-heading">이미지 압축
+                    <div class="right_startBtn" style="float:right; margin-top:-5px;">
+                        <button type="button" class="btn btn-primary btn-sm" style="border-radius: 30px;" onclick="finalCheck('quality');">적용</button>
+                    </div>
+                </div>
+
+                <div class="panel-body" style="margin:0 auto; text-align: center;">
+                    압축:
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default"><input type="radio" name="options" id="qoption1">미풍</label>
+                        <label class="btn btn-default"><input type="radio" name="options" id="qoption2">약풍</label>
+                        <label class="btn btn-default"><input type="radio" name="options" id="qoption3">중풍</label>
+                        <label class="btn btn-default"><input type="radio" name="options" id="qoption4">강풍</label>
+                        <label class="btn btn-default"><input type="radio" name="options" id="qoption5">태풍</label>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+
+            <div class="panel panel-default" id="tab_proxy" style="display:none;">
+                <div class="panel-heading">Proxy Auto Replace
+                    <div class="right_checkbox">
+                        <div class="onoffswitch">
+                            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="switch_proxy" onchange="setup_proxy();">
+                            <label class="onoffswitch-label" for="switch_proxy">
+                                <div class="onoffswitch-inner"></div>
+                                <div class="onoffswitch-switch"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <div class="panel panel-default">
+                <div class="panel-heading">Proxy Cache
+                    <div class="right_checkbox">
+                        <div class="onoffswitch">
+                            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="switch_proxycache" onchange="setup_proxyCache();">
+                            <label class="onoffswitch-label" for="switch_proxycache">
+                                <div class="onoffswitch-inner"></div>
+                                <div class="onoffswitch-switch"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+    </div>
+
+
+
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="editItem" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <form name="editForm">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">파일 상세 정보</h4>
+                    </div>
+                    <div class="modal-body">
+
+
+                        <div style="float:left; width:180px;">
+
+                            <div class="thumbnail">
+                                <img src="" width="180" id="editItem_thumbnail" style="max-width:180px; max-height:180px;">
+                            </div>
+
+                        </div>
+
+                        <div style="width:370px; display:inline;">
+                            <div style="margin-left:200px;">
+
+                                <strong>여백(top, left, bottom, right)</strong>
+                                <p>
+                                    <input type="text" id="editItem_top" style="width:150px; margin-right:10px; margin-bottom:7px;"><input id="editItem_left" type="text" style="width:150px;"><br>
+                                    <input type="text" id="editItem_bottom"style="width:150px; margin-right:10px;"><input type="text" id="editItem_right" style="width:150px;"></p>
+
+                                <hr>
+                                <strong>크기 (width, height)</strong>
+                                <p><input type="text" id="editItem_width" style="width:150px; margin-right:10px;"><input type="text" id="editItem_height" style="width:150px;"></p>
+
+                                <input type="checkbox" id="editItem_lower"> 최하단에 위치
+
+                            </div>
+                        </div>
+
+                    </div><!--/modal-body-->
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="editForm_Save()">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+
+
+
+
+
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="resultView" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <form name="editForm">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">결과</h4>
+                    </div>
+                    <div class="modal-body" id="resultView_Content">
+
+
+      </div><!--/modal-body-->
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalSprite" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <table cellpadding="0" cellspacing="0" width="100%" height="100%"><tr> <td width="100%" height="100%">
+
+        <form name="editForm">
+            <div class="modal-dialog" style="width:900px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">CSS Sprite</h4>
+                    </div>
+                    <div class="modal-body" style="height:500px; padding:0px;">
+
+                        <div style="float:left; width:300px; height:515px; overflow-x:hidden; overflow-y:scroll; border-right:1px solid #e1e1e1;">
+
+                            <table class="table table-striped oplist_detailTable" id="cssSpriteList" width="300">
+                                <tbody></tbody>
+                            </table>
+
+                        </div>
+
+                        <div style="float:left; width:575px; padding:30px;">
+
+                            <div style="float:left; width:180px;">
+                                <div class="thumbnail" style="height:180px;">
+                                    <img src="" width="180" id="cssSprite_thumbnail" style="max-width:180px; max-height:180px;">
+                                </div>
+                            </div>
+
+                            <div style="width:370px; display:inline;">
+                                <div style="margin-left:200px; word-break: break-all;">
+                                    <strong>파일이름: </strong><span id="cssSprite_name"></span><br><br>
+                                    <strong>이미지 크기: </strong><span id="cssSprite_size"></span><br>
+                                </div>
+
+                            </div>
+
+                            <div style="clear:both; padding-top:10px;">
+                                <hr>
+
+                                <strong>이미지 여백 </strong>
+                                <table height="200" cellpadding="0" cellspacing="0" style="margin-left:15px; margin-top:5px;">
+                                    <tr>
+                                        <td width="140" height="20"></td>
+                                        <td height="20"><p align="center"><input id="cssSprite_top" type="text" style="width:120px;" onchange="realtimeSave();"></p></td>
+                                        <td width="140" height="20"></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="140"><p align="right"><input id="cssSprite_left" type="text" style="width:120px;" onchange="realtimeSave();"></p></td>
+                                        <td><img src="@routes.Assets.at("images/imageBorder.gif")" style="margin-left:4px;"></td>
+                                        <td width="140"><p align="left"><input id="cssSprite_right" type="text" style="width:120px;" onchange="realtimeSave();"></p></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="140" height="25"></td>
+                                        <td height="25"><p align="center"><input id="cssSprite_bottom" type="text" style="width:120px;" onchange="realtimeSave();"></p>
+                                        </td><td width="140" height="25"></td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+
+                    </div><!--/modal-body-->
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-primary" onclick="cssSpriteSave()">이미지생성</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </td></tr></table>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="processBox" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <table cellpadding="0" cellspacing="0" width="100%" height="100%"><tr> <td width="100%" height="100%">
+
+        <form name="editForm">
+            <div class="modal-dialog" style="width:600px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="processBoxTitle">처리중</h4>
+                    </div>
+                    <div class="modal-body" style="height:150px; padding:45px; text-align:center;">
+                        <span id="processBoxTitle2"> </span><br><br>
+
+                        <div class="progress progress-striped active">
+                            <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+                        </div>
+
+
+                    </div><!--/modal-body-->
+                    <div class="modal-footer">
+                        <span style="float:left; font-size:8pt;">닫기버튼을 누르셔도 백그라운드에서 데이터를 처리합니다.</span>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </td></tr></table>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="applyLoading" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <table cellpadding="0" cellspacing="0" width="100%" height="100%"><tr> <td width="100%" height="100%">
+
+        <form name="editForm">
+            <div class="modal-dialog" style="width:600px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">최적화 규칙 분석중</h4>
+                    </div>
+                    <div class="modal-body" style="height:150px; padding:33px; text-align:center;">
+                        <span> 최적화 진행 가능한 파일을 분류하고 있습니다. 잠시 기다려주세요.</span><br><br>
+
+                        <div class="progress progress-striped active">
+                            <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+                        </div>
+
+
+                    </div><!--/modal-body-->
+                </div>
+            </div>
+        </form>
+
+    </td></tr></table>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="applyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <table cellpadding="0" cellspacing="0" width="100%" height="100%"><tr> <td width="100%" height="100%">
+
+        <form name="editForm">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="applyTitle">Title</h4>
+                    </div>
+                    <div class="modal-body" style="height:400px; padding:0px;">
+
+                        <div style="width:100%; height:415px; overflow-x:hidden; overflow-y:scroll;">
+                            <table class="table table-striped oplist_detailTable" id="applyList" width="100%">
+                                <tbody></tbody>
+                            </table>
+                        </div>
+
+
+                    </div><!--/modal-body-->
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-primary" onclick="finalCheckAction()">적용</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </td></tr></table>
+</div>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+
+var magic = @Html(magic);
+if(magic.rule_name) $("#applyLoading" ).modal("show");
+
+
+var req_project_id = @req_project_id;
+$(document).ready(function(){
+    updatePage();
+});
+
+</script>

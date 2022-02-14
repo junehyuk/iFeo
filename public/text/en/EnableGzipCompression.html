@@ -1,0 +1,65 @@
+<p>Compression of your HTML and CSS files with gzip typically saves around fifty to seventy percent of the file size. This means that it takes less time to load your pages, and it also means less bandwidth is used over all. It is pretty much the standard now and if you are not using it for some reason, your webpages are slower than your competitors.</p>
+
+<h2>How to enable Gzip compression on your website</h2>
+
+
+<p>Compression is enabled by adding some code to a file called .htaccess on your web host/server. This means going to the file manager (or wherever you go to add or upload files) on your webhost. The .htaccess file controls many important things for your site. If you are not familiar with the .htaccess file, please read my <a href="http://www.feedthebot.com/pagespeed/htaccess.html">working with .htaccess</a> article to get some know how before changing it.</p>
+<p>The code below should be added to your .htaccess file...</p>
+<div class="code"><p>&lt;ifModule mod_gzip.c&gt;<br>
+  mod_gzip_on Yes<br>
+  mod_gzip_dechunk Yes<br>
+  mod_gzip_item_include file .(html?|txt|css|js|php|pl)$<br>
+  mod_gzip_item_include handler ^cgi-script$<br>
+  mod_gzip_item_include mime ^text/.*<br>
+  mod_gzip_item_include mime ^application/x-javascript.*<br>
+  mod_gzip_item_exclude mime ^image/.*<br>
+  mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*<br>
+&lt;/ifModule&gt;</p>
+</div>
+
+
+<p>Save the .htaccess file and then refresh your webpage.</p>
+
+<p>Check to see if your compression is working using the <a href="http://www.feedthebot.com/tools/gzip/">Gzip compression tool</a>.</p>
+<h2>What does this do?</h2>
+
+<p>Adding this code to your .htaccess file will enable Gzip compression for the most commonly gzipped files and will help your webpages load faster. This not only helps your web page speed, but it also reduces your bandwidth so those who are paying for bandwidth can save real money by doing this.</p>
+
+<h2>Enable compression on Apache webservers</h2>
+<p>The instructions and code above will work on Apache. If they are not working there is another way that may work for you. If the above code did not seem to work, remove it from your .htaccess file and try this one instead...</p>
+
+<div class="code">
+<p>
+AddOutputFilterByType DEFLATE text/plain<br>
+AddOutputFilterByType DEFLATE text/html<br>
+AddOutputFilterByType DEFLATE text/xml<br>
+AddOutputFilterByType DEFLATE text/css<br>
+AddOutputFilterByType DEFLATE application/xml<br>
+AddOutputFilterByType DEFLATE application/xhtml+xml<br>
+AddOutputFilterByType DEFLATE application/rss+xml<br>
+AddOutputFilterByType DEFLATE application/javascript<br>
+AddOutputFilterByType DEFLATE application/x-javascript</p>
+
+</div>
+
+
+<h2>Enable compression on NGINX webservers</h2>
+<p>To enable compression in NGINX you will need to add the following code to your config file</p>
+<div class="code"><p>
+gzip on;<br>
+gzip_comp_level 2;<br>
+gzip_http_version 1.0;<br>
+gzip_proxied any;<br>
+gzip_min_length  1100;<br>
+gzip_buffers 16 8k;<br>
+gzip_types text/plain text/html text/css application/x-javascript text/xml application/xml application/xml+rss text/javascript;<br>
+<br>
+# Disable for IE &lt; 6 because there are some known problems<br>
+gzip_disable "MSIE [1-6].(?!.*SV1)";<br>
+<br>
+# Add a vary header for downstream proxies to avoid sending cached gzipped files to IE6<br>
+gzip_vary on;<br>
+</p></div>
+
+<h2>Enable compression on Litespeed webservers</h2>
+<p>The ideal way to enable compression in Litespeed is to do it through the configuration under "tuning". Just go down to "enable compression" and check to see if it is on, if not click "edit" then choose to turn it on. While you are there, look over the several Gzip options that are nearby.</p>

@@ -1,0 +1,43 @@
+<p>When a web browser displays your webpage it has to load several things like your logo, your CSS file, and other resources.</p>
+
+<p>What browser caching does is "remember" the resources that the browser has already loaded. When a visitor goes to another page on your website your logo or CSS file does not need to be loaded again, because the browser has them "remembered". The end result is that your pages load much faster.</p>
+
+
+<p>If you have tested your webpage for speed and found out that you need to leverage browser caching, here is how you do it.</p>
+
+<h2>How to enable browser caching</h2>
+
+<p>The most common way is to add some code to a file called .htaccess on your web host/server. This means going to the file manager (or wherever you go to add or upload files) on your webhost. </p><p>The .htaccess file controls many important things for your site. If you are not familiar with the .htaccess file, please read my <a href="http://www.feedthebot.com/pagespeed/htaccess.html">working with .htaccess</a> article to get some know how before changing it.</p>
+<p>The code below tells browsers what to cache and how long to "remember" it. It should be added to the top of your .htaccess file.</p>
+<div class="code"><p>## EXPIRES CACHING ##<br>
+&lt;IfModule mod_expires.c&gt;<br>
+ExpiresActive On<br>
+ExpiresByType image/jpg "access 1 year"<br>
+ExpiresByType image/jpeg "access 1 year"<br>
+ExpiresByType image/gif "access 1 year"<br>
+ExpiresByType image/png "access 1 year"<br>
+ExpiresByType text/css "access 1 month"<br>
+ExpiresByType text/html "access 1 month"<br>
+ExpiresByType application/pdf "access 1 month"<br>
+ExpiresByType text/x-javascript "access 1 month"<br>
+ExpiresByType application/x-shockwave-flash "access 1 month"<br>
+ExpiresByType image/x-icon "access 1 year"<br>
+ExpiresDefault "access 1 month"<br>
+&lt;/IfModule&gt;<br>
+## EXPIRES CACHING ##</p>
+</div>
+
+<p>Save the .htaccess file and then refresh your webpage.</p>
+<h2>How to set different caching times for different file types</h2>
+<p>You can see in the above code that there are time periods like "1 year" or "1 month". These are associated with file types, as an example the above code states that a .jpg file (image) should be cached for a year.</p>
+<p>If you want to change that and say you want your jpg images cached for a month you would simply replace "1 year" with "1 month". The values above are pretty optimized for most webpages and blogs.</p>
+
+<h2>Common caching issue</h2>
+<p>If you list your html and images to be cached for one year or some other long time period, remember that this can mean if you make a change to your pages they may not be seen by all users. This is because the users will look to cached files rather than the live ones. If you have file that you tweak occasionally (example - a CSS file) you can overcome the cache issue by using URL fingerprinting. 
+
+</p><h2>URL fingerprinting</h2>
+<p>Getting a fresh (not cached) file resource is possible by having a unique name. An example would be if our css file was named "main.css" we could name it "main_1.css" instead. The next time we change it we can call it "main_2.css". This is useful for files that change occasionally.</p>
+
+<h2>Caching methods</h2>
+
+<p>Google recommends using Expires (the method shown above) and reminds us that - "It is important to specify one of Expires or Cache-Control max-age, and one of Last-Modified or ETag, for all cacheable resources. It is redundant to specify both Expires and Cache-Control: max-age, or to specify both Last-Modified and ETag." in other words, use just one method and the preferred method is the one we have explained on this page.</p>

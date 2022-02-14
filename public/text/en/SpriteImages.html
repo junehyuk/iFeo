@@ -1,0 +1,30 @@
+<h4>Overview</h4>
+    Combining images into as few files as possible using CSS sprites reduces the number of round-trips and delays in downloading other resources, reduces request overhead, and can reduce the total number of bytes downloaded by a web page.
+
+
+    <h4>Details from Google</h4>
+
+<p>Similar to JavaScript and CSS, downloading multiple images incurs additional round trips. A site that contains many images can combine them into fewer output files to reduce latency.</p>
+
+
+<h>recommends:</h4>
+      <h5>Sprite images that are loaded together</h5>
+<p>Combine images that are loaded on the same page and that are always loaded together. For instance, a set of icons that are loaded on every page should be sprited. Dynamic images that change with each pageview, such as profile pictures or other images that change frequently, may not be good candidates for spriting.</p>
+
+<h5>Sprite GIF and PNG images first</h5>
+<p>GIF and PNG images use lossless compression and can thus be sprited without reducing the quality of the resulting sprited image.</p>
+
+<h5>Sprite small images first</h5>
+<p>Each request incurs a fixed amount of request overhead. The time it takes a browser to download small images can be dominated by the request overhead. By combining small images, you can reduce this overhead from one request per image to one request for the entire sprite.</p>
+
+<h5>Sprite cacheable images</h5>
+<p>Spriting images with long caching lifetimes means that the image will not have to be re-fetched once it's cached by the browser.</p>
+
+<h5>Using a spriting service</h5>
+<p>Spriting services such as <a href="http://spriteme.org/">SpriteMe</a> can make it easier to build CSS sprites.</p>
+
+<h5>Minimize the amount of "empty space" in the sprited image</h5>
+<p>In order to display an image, the browser must decompress and decode the image. The size of the decoded representation of the image is proportional to the number of pixels in the image. Thus, while empty space in a sprited image may not significantly impact the size of the image file, a sprite with undisplayed pixels increases the memory usage of your page, which can cause the browser to become less responsive.</p>
+
+<h5>Sprite images with similar color palettes</h5>
+<p>Spriting images with more than 256 colors can cause the resulting sprite to use the PNG true color type instead of the palette type, which can increase the size of the resulting sprite. To generate optimal sprites, combine images that share the same 256 color palette. If there is some flexibility in the colors in your images, consider reducing the resulting sprite's color palette to 256 colors.</p>

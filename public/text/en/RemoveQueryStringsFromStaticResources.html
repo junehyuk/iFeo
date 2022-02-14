@@ -1,0 +1,2 @@
+<h4>Overview</h4>
+    Most proxies, most notably Squid up through version 3.0, do not cache resources with a "?" in their URL even if a <code>Cache-control: public</code> header is present in the response. To enable proxy caching for these resources, remove query strings from references to static resources, and instead encode the parameters into the file names themselves.

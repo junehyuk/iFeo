@@ -1,0 +1,103 @@
+@(userdata:User)(implicit request: play.api.mvc.Request[Any])
+
+@frame("modify",0) {
+
+    <style>
+    body{background-color:#f7f7f7;}
+
+    .itemWrap{height:80px;}
+    </style>
+
+    <center>
+        <div class="panel panel-default" style="width:650px; margin-top:80px; padding-bottom:15px;">
+            <div class="panel-body">
+
+                <form class="form-signin" role="form" action="/" id="registerForm">
+                    <h3 class="form-signin-heading">Update your Account</h3>
+                    <hr>
+                    <div style="text-align: left; width:80%;">
+
+                        <div class="itemWrap">
+                            <label>Password</label>
+                            <input type="password" name="pwd" class="form-control" placeholder="Password" required />
+                        </div>
+
+                        <div class="itemWrap">
+                            <label>Confirm Password</label>
+                            <input type="password" name="pwd2" class="form-control" placeholder="Confirm Password" required/>
+                        </div>
+
+                        <div class="itemWrap">
+                            <label>Email Address</label>
+                            <input type="email" name="email" class="form-control" placeholder="Email Address" required value="@userdata.email"/>
+                        </div>
+
+                    </div>
+                    <hr>
+
+                    <button class="btn btn-primary" type="submit" style="float:right; width:100px; margin-left:5px;">Save</button>
+                    <span class="btn btn-default" type="submit" style="float:right; width:100px; margin-left:5px;" onclick="location.href='@routes.Tool.index()'">Cancel</span>
+
+                </form>
+
+            </div>
+        </div>
+        © Feedle. All Rights Reserved.
+    </center>
+
+
+    <script>
+
+    $( "#registerForm" ).submit(function( event ) {
+
+    event.preventDefault();
+    var $form = $( this ),
+    id = $form.find( "input[name='id']" ).val(),
+    pwd = $form.find( "input[name='pwd']" ).val(),
+    pwd2 = $form.find( "input[name='pwd2']" ).val(),
+    email = $form.find( "input[name='email']" ).val(),
+    url = $form.attr("action");
+
+    if( $form.find( "input[name='pwd']" ).val() == "")
+    {
+    alert("비밀번호가 공란입니다.");
+    return;
+    }
+
+    if( $form.find( "input[name='email']" ).val() == "")
+    {
+    alert("이메일을 입력해주세요.");
+    return;
+    }
+
+    if( $form.find( "input[name='pwd']" ).val() != $form.find( "input[name='pwd2']" ).val())
+    {
+    alert("비밀번호가 일치하지 않습니다.");
+    return;
+    }
+
+
+    var email = $form.find( "input[name='email']" ).val();
+    var regExp = /[0-9a-zA-Z][_0-9a-zA-Z-]*@@[_0-9a-zA-Z-]+(\.[_0-9a-zA-Z-]+){1,2}$/;
+
+    if (!email.match(regExp)){
+     alert("올바르지 않은 이메일 형식입니다.");
+     return;
+    }
+
+    var postURL = "@routes.Member.modifyUpdate()";
+    var processOK = "@routes.Member.login()";
+
+    var posting = $.post( postURL , {"pwd":pwd,"email":email } );
+    posting.done(function( data ) {
+    if(data=="Ok") { alert("회원정보 업데이트가 완료되었습니다."); }
+    else {
+    alert(data);
+    }
+    });
+
+    });
+    </script>
+
+
+}

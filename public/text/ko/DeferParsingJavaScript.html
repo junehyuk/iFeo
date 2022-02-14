@@ -1,0 +1,9 @@
+	<br>
+	하단에 스크립트를 넣어라<br>
+<br>
+	만약 스크립트가 지연될 수 있다면, 페이지 하단으로 옮겨 웹페이지의 로드속도를 빠르게 만들어줄 수 있습니다.<br>
+<br>
+	scripts로 야기될 수 있는 문제는 바로 병렬 다운로드를 방해한다는 것이다. HTTP/1.1 특징은 browsers가 host별로 두 개 이하의 components를 병렬 다운로드 하도록 구성할 것을 제시한다. 만약 여러 host에서 이미지를 제공한다면 병렬(parallel)로 발생하는 두 개 이상의 다운로드를 받을 수 있다. 그렇지만 위의 문제로 인해 script가 다운로드 되는 동안 browser는 서로 다른 hostname이라 하더라도 다운로드를 시작하지 않을 것이다.<br>
+	어떤 상황에서 하단에 scripts를 이동하는 것은 쉽지 않다. 예를 들어, 만약 script가 페이지 contents의 일부를 삽입하기 위해 document.write를 사용한다면, 페이지의 하단으로 이동할 수 없다. 이것은 많은 문제점을 남기지만, 대부분의 경우 이런 상황에서의 차선책을 가지고 있다.<br>
+	종종 대안으로 제시되는 것은 defer속성 scripts를 사용하는 것이다. DEFER의 속성은 script가 document.write를 포함하지 않음을 나타내고, browsers는 rendering을 계속할 수 있는 정보를 제공한다. 하지만, Firefox는 DEFER 속성을 지원하지 않는다. Internet Explorer에서 script는 defer(지연)될 수도 있지만, 만족스럽지는 않을 것이다. 만약 script가 deffered(지연)될 수 있다면, 페이지 하단으로의 이동이 가능하다. 그것은 웹페이지의 load 속도를 빠르게 만들어줄 것이다.<br>
+<br>

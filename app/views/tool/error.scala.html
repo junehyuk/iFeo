@@ -1,0 +1,22 @@
+@(message: String)(implicit request: play.api.mvc.Request[Any])
+
+@frame("error",0) {
+
+    <style type="text/css">
+        body{background-color:#f7f7f7;}
+     .itemWrap{height:80px;}
+    </style>
+
+    <center>
+        <div class="panel panel-danger" style="width:650px; margin-top:80px; padding-bottom:15px;">
+            <div class="panel-heading"><span style="font-size:14pt;"><b>오류 발생</b></span></div>
+            <div class="panel-body">
+                @message
+                <hr><span class="btn btn-default" type="submit" style="float:right; width:100px; margin-left:5px;" onclick="history.go(-1);">Go Back</span>
+            </div>
+        </div>
+        © Feedle. All Rights Reserved.
+    </center>
+
+
+}

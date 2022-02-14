@@ -1,0 +1,508 @@
+@(req_project_id: Int)
+
+
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/diffview.css")"/>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/diffview.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/difflib.js")"></script>
+    <link href="@routes.Assets.at("stylesheets/jquery.treeview.css")" rel="stylesheet" media="screen">
+
+    <link href="@routes.Assets.at("stylesheets/bootstrap-treeview.css")" rel="stylesheet">
+
+    <style type="text/css">
+        a:hover {text-decoration: none}
+        .file{color:black;}
+        .file:hover{color:blue;}
+        .folder:hover{color:blue;}
+
+
+        .inlinediff {width:100%}
+
+        #sidebysideView .texttitle {width:50%}
+        #diffoutputbox .texttitle {width:100%}
+    </style>
+
+
+    <div id="sub_menu"><!--서브 메뉴!-->
+
+        <div id="sub_menu_control">
+            <div class="btn-group" style="padding-top:8px;">
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_addPage"> <span class="glyphicon glyphicon-plus"></span></button>
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_refreshPage"> <span class="glyphicon glyphicon-refresh"></span></button>
+            </div>
+
+            <form class="navbar-form navbar-right" role="search">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                </div>
+            </form>
+        </div>
+
+        <div id="sub_menu_item"  oncontextmenu='return false' ondragstart='return false'  onselectstart='return false'>
+
+
+            <ul id="tree" path="root/" class="filetree"></ul>
+
+        </div>
+
+
+
+
+
+
+
+    </div><!--서뷰 메뉴 끝!-->
+
+
+
+    <div id="main_contents" style="height:100%;">
+
+        <div style="height:50px;">
+        <h4 style="float:left" id="pageTitle"> </h4>
+
+        <div class="btn-group" style="float:right;">
+            <button type="button" class="btn btn-default loadingOff" data-toggle="modal" data-target="#myModal" onclick="diffUsingJS('sidebysideView',0)">
+                 <span class="glyphicon glyphicon-th-list"></span> Side-by-side diff
+            </button>
+
+            <button type="button" class="btn btn-default loadingOff" onclick="simulate();">
+                <span class="glyphicon glyphicon-send"></span> Simulation
+            </button>
+
+            <button type="button" class="btn btn-default" onclick="refreshNow();">
+                <span class="glyphicon glyphicon-refresh"></span> Refresh
+            </button>
+
+            <button type="button" class="btn btn-default" onclick="pageRemove_event();">
+                <span class="glyphicon glyphicon-trash" ></span> Delete
+            </button>
+
+        </div>
+
+
+
+        </div>
+
+        <div id="diffoutputbox" style="clear:both"> </div>
+        <div id="diffloading" style="height:calc(100% - 100px);">
+            <table cellpadding="0" cellspacing="0" width="100%" height="100%">
+                <tr>
+                    <td width="100%" height="100%">
+                        <p align="center">
+                            <img src="@routes.Assets.at("images/loading.gif")" width="60" height="60"><br>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+
+
+
+
+
+        <div style="visibility: hidden;">
+            <strong>Context size (optional):</strong> <input type="text" id="contextSize" value="" />
+            <textarea id="baseText"></textarea>
+            <textarea id="newText"></textarea>
+            <input type="radio" name="_viewtype" id="sidebyside" onclick="diffUsingJS(0);" /> <label for="sidebyside">Side by Side Diff</label>
+            <input type="radio" name="_viewtype" id="inline" onclick="diffUsingJS(1);" /> <label for="inline">Inline Diff</label>
+        </div>
+
+    </div><!--콘텐츠 끝!-->
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" style="width:100%; height:100%; overflow:hidden;" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:95%; height:94%">
+            <div class="modal-content" style="width:100%; height:99%;">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Side by Side Diff</h4>
+                </div>
+                <div class="modal-body" style="width:99.8%; height:92%; overflow: scroll;">
+                    <div id="sidebysideView"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--페이지추가-->
+<div class="modal fade" id="modal_addPage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">페이지 추가</h4>
+            </div>
+            <div class="modal-body">
+
+                <p>페이지 경로</p>
+                <input class="form-control input-sm" type="text" placeholder="" id="path">
+
+                <hr>
+
+                <div style="height:50px;">
+                    <span style="">Query</span>
+                    <input class="form-control input-sm" type="text" placeholder="" style="float:right; width:430px;" id="header">
+                </div>
+
+                <div style="clear:both; height:100px;">
+                    <span >Header</span>
+                    <textarea class="form-control" rows="5" cols="30" name="contents" style="float:right; width:430px;" id="query"></textarea>
+                </div>
+
+
+
+
+            </div>
+            <div class="modal-footer">
+                <div id="addPageCaption" style="float:left; display:none;">페이지 추가가 진행중입니다. 잠시 기다려주세요.</div>
+                <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+                <button type="button" id="pageAddOkButton" class="btn btn-primary" onclick="pageAdd();">추가</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!--페이지 새로고침-->
+<div class="modal fade" id="modal_refreshPage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">페이지 새로고침</h4>
+            </div>
+            <div class="modal-body">
+                페이지 새로고침을 하시면 모든 파일이 자동으로 업데이트 되며, 업데이트 작업에 몇 분이 소요될 수 있습니다.
+                정말로 페이지 새로고침을 진행하시겠습니까?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" onclick="refreshAll();">진행</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="@routes.Assets.at("javascripts/jquery.treeview.js")"></script>
+<script type="text/javascript">
+
+    var nowPageNo = -1;
+    function diffUsingJS(viewId, viewType) {
+        "use strict";
+        var byId = function (id) { return document.getElementById(id); },
+        base = difflib.stringAsLines(byId("baseText").value),
+        newtxt = difflib.stringAsLines(byId("newText").value),
+        sm = new difflib.SequenceMatcher(base, newtxt),
+        opcodes = sm.get_opcodes(),
+        diffoutputdiv = byId(viewId),
+        contextSize = byId("contextSize").value;
+
+        diffoutputdiv.innerHTML = "";
+        contextSize = contextSize || null;
+
+        diffoutputdiv.appendChild(diffview.buildView({
+        baseTextLines: base,
+        newTextLines: newtxt,
+        opcodes: opcodes,
+        baseTextName: "Base HTML",
+        newTextName: "New HTML",
+        contextSize: contextSize,
+        viewType: viewType
+        }));
+    }
+
+
+    //diffUsingJS("sidebyside",0);
+
+    function simulate(){
+        window.open('http://simulation.feedle.kr/?feedle_simulation=5'+nowPageNo, '_blank');
+    }
+
+    function refreshBackEnd(pageNo){
+
+        var posting = $.get( "../../api/pages/refresh/" + pageNo);
+
+        if(pageNo==nowPageNo){
+            $("#diffoutputbox").hide();
+            $("#diffloading").show();
+            $(".loadingOff").attr( "disabled", "disabled" );
+        }
+
+        posting.done(function( data ) {
+            if(pageNo==nowPageNo){
+                pageView(pageNo);
+            }
+        });
+
+    }
+
+    function refreshAll(){
+
+        $.each(pageList, function(index, value) {
+            refreshBackEnd(value.pageId);
+        });
+        $("#modal_refreshPage").modal("hide");
+
+    }
+
+    function refreshNow(){
+        pageRefresh(nowPageNo)
+    }
+
+    function pageRefresh(pageNo){
+        if (confirm("페이지를 새로고침 하시곘습니까?") == true){
+            refreshBackEnd(pageNo);
+        }
+    }
+
+    function pageRemove_event(){
+        pageDel(nowPageNo);
+    }
+
+
+
+    function pageAdd(){
+        var processOK = "@(routes.Tool.addPage(req_project_id))";
+        var path = $("#path").val();
+        var header = $("#header").val();
+        var query = ($("#query" ).val());
+
+        if(path==""){
+          alert("페이지 생성을 위해 경로를 입력해주셔야합니다.");
+          return;
+        }
+
+        if(path.indexOf("http://")==0 || path.indexOf("https://")==0){
+            alert("페이지에 프로토콜(http) 및 도메인을 제외하고 입력해주세요.");
+            return;
+        }
+
+        if(path.indexOf("/")==0){
+            alert("파일명의 시작은 /로 할 수 없습니다.");
+            return;
+        }
+
+        $("#pageAddOkButton").attr( "disabled", "disabled" );
+        $("#addPageCaption" ).show();
+        var posting = $.post( processOK , {"path":"/"+path,"header":header,"query":query} );
+
+        posting.done(function( data ) {
+
+            if(data=="Ok") {
+                pageUpdate();
+                $("#addPageCaption" ).hide();
+                $("#pageAddOkButton").removeAttr("disabled");
+                //$("#pageAddOkButton").attr( "disabled", "disabled" );
+
+                $('#modal_addPage').modal("hide");
+                $("#path").val("");
+                $("#header").val("");
+                $("#query" ).val("");
+            } else {
+            alert("페이지 생성중 오류가 발생하였습니다.");
+            }
+        });
+
+    }
+
+    var pageList = [];
+    //var treeParentDrawed = new Array;
+
+    function folderMake(parent,newFolder){
+        if( $("[path$='root"+parent+"']" ).length== 0 ){
+            var newPath = parent.substring(0,parent.lastIndexOf('/'));
+            var re_newFolder = newPath.substring(newPath.lastIndexOf('/')+1);
+            var re_parent = newPath.substring(0, newPath.lastIndexOf("/"))+"/";
+            folderMake(re_parent,re_newFolder);
+
+        }
+        $("[path$='root"+parent+"']").append('<li class="closed"><span class="folder">'+newFolder+'</span><ul path="root'+parent+newFolder+'/"></ul></li>');
+    }
+
+    function fileMake(value){
+
+        var file = value.path.split('/').pop();
+        var parent = value.path.substring(0, value.path.lastIndexOf("/"))+"/";
+
+        if( $("[path$='root"+parent+"']" ).length== 0 ) {
+            var newPath = parent.substring(0,parent.lastIndexOf('/'));
+            var re_newFolder = newPath.substring(newPath.lastIndexOf('/')+1);
+            var re_parent = newPath.substring(0, newPath.lastIndexOf("/"))+"/";
+            folderMake(re_parent,re_newFolder);
+        }
+
+        if(file=="") file = "/";
+        $("[path$='root"+parent+"']").append('<a class="fileEvent" href="#" id="file_'+value.pageId+'"><li><span class="file">'+file+'</span></li></a>');
+
+    }
+
+    function treeDraw(){
+        $("[path$='root/']").html("");
+
+        $.each(pageList, function(index, value) {
+            fileMake(value);
+        });
+
+        $("#tree").treeview();
+    }
+
+
+    function pageUpdate(){
+
+        $.getJSON( "@(routes.Tool.listPage(req_project_id))", function(data) {
+            pageList = data;
+            treeDraw();
+            DelegateUpdate();
+            if(nowPageNo=="-1") goRoot();
+
+        });
+
+
+    }
+
+$(document).ready(function(){
+    pageUpdate();
+});
+
+function pathToId(path){
+var returnPath = "-1";
+$.each(pageList, function(index, value) {
+    if(value.path == path) returnPath = value.pageId;
+});
+return returnPath;
+}
+
+
+function idToPath(objId){
+    var returnPath = "/";
+    $.each(pageList, function(index, value) {
+        if(value.pageId == objId) returnPath = value.path;
+    });
+    return returnPath;
+}
+
+function DelegateUpdate()
+{
+
+
+    // 파일삭제 업데이트
+    $(".fileEvent").bind("contextmenu", function() {
+        var nowId = this.id.substring(5);
+        pageDel(nowId)
+        return false;
+    });
+
+    // 페이지 클릭
+    $(".fileEvent").bind("click", function() {
+        var nowId = this.id.substring(5);
+        pageView(nowId);
+    });
+
+
+
+}
+
+function pageDel(nowId){
+    var nowpath = idToPath(nowId);
+
+    if(nowpath=="/") {
+        alert("이 페이지는 삭제할 수 없습니다.");
+        return;
+    }
+
+    if (confirm("정말 이 페이지를 삭제하시곘습니까?\n\n"+nowpath) == true){
+        var removeURL = "@(routes.Tool.removePage(req_project_id))";
+        var posting = $.post( removeURL , {"pageId":nowId});
+        posting.done(function( data ) {
+            pageUpdate();
+        });
+
+        if(nowId==nowPageNo) {
+            goRoot();
+        }
+    }
+}
+
+function goRoot(){
+    pageView(pathToId("/"));
+}
+
+function pageView(nowId){
+
+    if(nowId==-1) return;
+    nowPageNo = nowId;
+
+    var nowpath = idToPath(nowId);
+    $("#pageTitle").text(nowpath);
+
+    $("#diffoutputbox").hide();
+    $("#diffloading").show();
+     $(".loadingOff").attr( "disabled", "disabled" );
+
+    $.get( "../../api/pages/status/"+nowPageNo, function( data ) {
+        $.get( "../../api/pages/before/"+nowPageNo, function( data ) {
+        $( "#baseText" ).text( data );
+        $.get( "../../api/pages/after/"+nowPageNo, function( data ) {
+        $( "#newText" ).text( data );
+
+            $("#diffloading").hide();
+            $("#diffoutputbox").show();
+            $(".loadingOff").removeAttr("disabled");
+             diffUsingJS("diffoutputbox",1);
+        });
+        });
+    });
+}
+
+
+
+
+</script>
+
+

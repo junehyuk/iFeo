@@ -1,0 +1,18 @@
+	<br><br>
+	브라우저 캐시를 위한 Last-Modified, ETag header 해더 지정해 준다면, 브라우저에 캐싱을 통해 한번 전송받은 파일을 재활용 하도록 하므로써, 방문했던 페이지를 보다 빠르게 로딩 할 수 있습니다.<br><br>
+
+Entity tags(ETags)는 browser의 cache에 있는 component가 원본 서버에 있는 component와 일치하는지 여부를 확인하기 위해 웹서버와 browsers가 사용하는 메커니즘이다. (“entity”는 “component”의 다른 단어이다: images, scripts, stylesheets 등) ETags는 마지막 수정날짜보다 더 유동적인 검증기관들에 대한 메커니즘을 제공하기 위해 추가된다. ETag는 유일하게 component의 특정 버전을 식별하는 문자열이다. 유일한 형식 제약은 문자열을 이용하는 것이다. 원본 서버는 ETag 응답 header를 사용하여 component의 ETag를 지정한다.<br><br>
+HTTP/1.1 200 OK<br>
+Last-Modified: Tue, 12 Dec 2006 03:03:59 GMT<br>
+ETag: "10c24bc-4ab-457e1c1f"<br>
+Content-Length: 12195<br>
+나중에 browser가 component를 확인해야만 한다면, 원본서버에서 ETag를 통과시키기 위해 If-None-Match header를 사용해라. 만약 ETags가 일치한다면, 다음 아래 예로 304 status code는 12195 bytes로 응답을 줄이고 반환된다.<br>
+GET /i/yahoo.gif HTTP/1.1<br>
+Host: us.yimg.com<br>
+If-Modified-Since: Tue, 12 Dec 2006 03:03:59 GMT<br>
+If-None-Match: "10c24bc-4ab-457e1c1f"<br>
+HTTP/1.1 304 Not Modified<br><br>
+ETags는 사이트를 호스팅하는 특정서버에서만 보여지도록 만들어진 속성을 사용하도록 설계되었기 때문에 browser가 한 서버로부터 원본 component를 얻고 나중에 다른 서버에서 해당 component를 확인하려고 할 때 일치하지 않는다는 문제점이 있다. 웹사이트가 요청을 처리하기 위해서는 서버를 클러스터 구성으로 하는 것이 일반적이다. 기본적으로 Apache와 IIS 모두 여러 대의 서버를 이용하여 웹 사이트의 계속되는 유효성 테스트를 획기적으로 줄일 수 있도록 ETag에 데이터를 삽입한다. Apache 1.3과 2.x에 대한 ETag 형식은 inode_size_timestamp이다. 비록 특정 파일이 여러 서버에 를 통해 동일한 디렉토리에 상주하고, 동일한 파일크기, 권한, timestamp 등을 가지더라도, 그 파일의 inode는 서버마다 다르다.<br>
+IIS 5.0 및 6.0은 ETags와 유사한 문제를 가지고 있다. IIS에서 ETags에 대한 형식은 Filetimestamp:ChangeNumber이다. ChangeNumber는 IIS 구성변경을 추적하는 데 사용하는 counter이며, 웹사이트 뒤에 위치한 모든 IIS 서버들은 다른 ChangeNumber를 가지고 있다.<br><br>
+완벽히 동일한 component에 대해서, Apache 및 IIS에 의해 생성된 ETags는 서버마다 일치하지 않을 것이라는 최종결과를 보여준다. 만약 ETags가 일치하지 않는다면, 사용자는 효율적인(작고 빠른) 304 응답(ETags에 의해 설계된)을 받지 않는다. 대신에 사용자는 component에 대한 모든 데이터 외에 일반적인 200 응답을 받을 것이다. 오직 한 서버에서 웹사이트를 호스트하는 경우는 문제가 되지 않지만 여러 서버에서 웹사이트를 호스팅 한다면, ETag 설정을 기본으로 Apache나 IIS을 사용해야 할 것이다. 또한 사용자의 페이지는 점점 느려지고 서버의 부하가 높아지며, 보다 큰 대역폭을 소모할 뿐 아니라, proxies는 contents를 효율적으로 caching하지 못할 것이다. 비록 component가 먼 미래시점의 Expires header를 가지더라도 사용자가 Reload(재로드) 또는 Refresh(새로고침)을 누를 때마다 조건부의 GET 요청은 계속 이루어진다. 만약 ETags가 제공하는 유연한 검증 모델을 활용하지 않는다면, ETag를 완전히 제거하는 편이 낫다. 마지막으로 수정된 header는 component의 timestamp에 따라 확인된다. 그리고 ETag를 제거하면 응답과 후속 요청 모두에서 HTTP header 크기를 줄일 수 있다. 이 Microsoft Support article은 ETags를 어떻게 제거하는지 설명하고 있다. Apache에서의 ETags 제거는 설정 파일에 간단히 다음 줄을 추가함으로써 이루어진다.<br>
+FileETag none<br>

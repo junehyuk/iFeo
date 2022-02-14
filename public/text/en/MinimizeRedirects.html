@@ -1,0 +1,32 @@
+<p>Redirects are instructions or methods that automatically take visitors of one file to another file or location. They are accomplished in many ways. Each way hurts your pagespeed.</p>
+<h2>How do redirects affect page speed?</h2>
+
+<p>Have you ever asked where a bathroom is and then you go there, and are told that this bathroom is closed and you have to go to some other bathroom? It is like that. Redirects cause your pages to load slower because it is a waste of time to go to one place just to be redirected to another.</p>
+
+<p>There are many good and legitimate reasons to have redirects but it should be kept in mind that redirects cause significant performance and speed issues.</p>
+
+<h2>Avoid redirects</h2>
+
+<p>If you do not use any redirects, you are serving your content significantly faster. Redirects are likely the one single most time waster in your code especially when you consider mobile networks. They dramatically affect your page speed in a noticeably bad way.</p>
+
+<h2>Server-side redirects: Fast, cachable</h2>
+
+<p>Common redirects are 301 and 302 redirects which use HTTP to explain that a page or resource has moved. A 301 redirect is permanent and a 302 redirect is temporary. These are both server-side redirects which means that the web server is using HTTP to direct the browser to the new location of the file. Web browser can handle these types of redirect much quicker than client-side redirects and can cache the correct location of the file.</p>
+
+<h2>Client-side redirects: Slow, not cachable</h2>
+<p>Redirects that use the http-equiv="refresh" attribute or javascript can introduce even longer waiting times and performance issues and should be not used if at all possible.</p>
+
+<h2>Got redirects?</h2>
+
+<p>You very likely do have some. Perhaps one of the most used redirects on the web is 301 redirect site wide from the non-www to www version of a webpage. These types of redirects have been recommended for SEO reasons for years so many people have them.</p>
+<p>It is my recommendation that if you have this type of redirect, you keep it in as it helps Google understand your website better.</p>
+<p>You can check for redirects on your pages by using the <a href="http://www.feedthebot.com/tools/spider/">seo spider tool</a>, which detects 301 and 302 redirects.</p>
+<p>It is a good time to check all your pages redirects and see where they are on your site and think about how to change them, or if they are important enough to slow down your pages. Google <a href="https://developers.google.com/speed/docs/best-practices/rtt#AvoidRedirects">suggests</a> eliminating redirects which are not absolutely necessary. Google suggests eliminating them by...</p>
+
+<ul>
+<li>Never link to a page that you know has a redirect on it. This happens when you have manually created a redirect, but never changed the text link in your HTML to point to the new resource location.</li>
+<li>Never require more than one redirect to get to any of your resources.</li>
+</ul>
+
+<h2>Don't forget that your webpage isn't just loading HTML</h2>
+<p>Virtually all webpages require other things to load. You may think you have no redirects in your HTML, but what about your CSS files, images or external scripts? Make sure you know what resources your page is calling as it loads. Use the <a href="http://www.feedthebot.com/tools/requests/">request checker tool</a> to do so.</p>

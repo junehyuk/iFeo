@@ -1,0 +1,26 @@
+<h4>Overview</h4>
+    Fetching resources asynchronously prevents those resources from blocking the page load.
+    <h4>Details from Google</h4>
+
+<p>When a browser parses a traditional script tag, it must wait for the script to download, parse, and execute before rendering any HTML that comes after it. With an asynchronous script, however, the browser can continue parsing and rendering HTML that comes after the async script, without waiting for that script to complete. When a script is loaded asynchronously, it is fetched as soon as possible, but its execution is deferred until the browser's UI thread is not busy doing something else, such as rendering the web page.</p>
+
+<h4>recommends:</h4>
+      <p>JavaScript resources that aren't needed to construct the initial view of the web page, such as those used for tracking/analytics, should be loaded asynchronously. Some scripts that display user-visible content may also be loaded asynchronously, especially if that content is not the most important content on the page (e.g. it is below the fold).</p>
+
+<h5>Use a script DOM element</h5>
+
+<p>Using a script DOM element maximizes asynchronous loading across current browsers:</p>
+
+<pre>&lt;script&gt;
+var node = document.createElement('script');
+node.type = 'text/javascript';
+node.async = true;
+node.src = 'example.js';
+// Now insert the node into the DOM, perhaps using insertBefore()
+&lt;/script&gt;</pre>
+
+<p>Using a script DOM element with an async attribute allows for asynchronous loading in Internet Explorer, Firefox, Chrome, and Safari. By contrast, at the time of this writing, an HTML &lt;script&gt; tag with an async attribute will only load asynchronously in Firefox 3.6 and Chrome 8, as other browsers do not yet support this mechanism for asynchronous loading.</p>
+
+<h5>Load Google Analytics asynchronously</h5>
+
+<p>The newest version of the Google Analytics snippet uses asynchronous JavaScript. Pages that use the old snippet should <a href="http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html">upgrade to the asynchronous version</a>.</p>

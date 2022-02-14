@@ -1,0 +1,388 @@
+
+@(req_project_id: Int, myProject:Project, myProxy:ProxySetting,magic:String)(implicit request: play.api.mvc.Request[Any])
+<style>
+
+</style>
+
+
+    <div id="main_contents_large" style="width:1000px; padding-right: 20px;"><!--내용!-->
+
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading">프로젝트 기본 설정</div>
+
+            <div class="panel-body">
+
+                    <div class="defaultItem">
+                        <div style="float:left; width:20%; padding-top:4px;">프로젝트명</div>
+                        <div style="float:right; width:80%;"><input class="form-control input-sm" type="text" placeholder="" id="input_title" value="@myProject.title"> </div>
+                    </div>
+            </div>
+        </div>
+
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading">프록시 설정
+                <div class="right_checkbox">
+
+                    <div class="onoffswitch">
+                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="proxySwitch" @if(myProject.proxyuse.get==1) { checked }>
+                        <label class="onoffswitch-label" for="proxySwitch">
+                            <div class="onoffswitch-inner"></div>
+                            <div class="onoffswitch-switch"></div>
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="panel-body">
+
+                <div class="defaultItem">
+                    <div style="float:left; width:20%; padding-top:4px;">IP주소</div>
+                    <div style="float:right; width:80%;"><input class="form-control input-sm" type="text" placeholder="" id="input_ip" value="@myProject.originIp"> </div>
+                </div>
+                <br><br>
+                <div class="alert alert-warning fade in" style="clear:both; margin-bottom:0px;">
+                    프록시 서버를 사용하시려면 도메인의 CNAME설정을 feo.feedle.kr.akadns.net 로 변경해주세요. <br>
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Header Cache-Control</div>
+
+            <div class="panel-body">
+                <select class="form-control" style="width:250px;" id="headerCache">
+                    <option value="0" @if(myProxy.headercacheDay.get=="0") { selected }>비활성화</option>
+                    <option value="86400" @if(myProxy.headercacheDay.get=="86400") { selected }>1일</option>
+                    <option value="259200" @if(myProxy.headercacheDay.get=="259200") { selected }>3일</option>
+                    <option value="86407" @if(myProxy.headercacheDay.get=="86407") { selected }>7일</option>
+                    <option value="2678400" @if(myProxy.headercacheDay.get=="2678400") { selected }>31일</option>
+                </select>
+
+                <hr>
+
+                <div style="height:30px;">
+                    <div style="width:20%; float:left;"> <input type="checkbox"> text/plain</div>
+                    <div style="width:20%; float:left;"> <input type="checkbox"> text/css</div>
+                    <div style="width:20%; float:left;"> <input type="checkbox"> application/x-javascript</div>
+                    <div style="width:20%; float:left;"> <input type="checkbox"> text/xml</div>
+                    <div style="width:20%; float:left;"> <input type="checkbox"> application/xml </div>
+                </div>
+
+                <div style="height:30px;">
+                    <div style="width:20%; float:left;"> <input type="checkbox"> application/xml</div>
+                    <div style="width:20%; float:left;"> <input type="checkbox"> application/xml+rss</div>
+                    <div style="width:20%; float:left;"> <input type="checkbox"> text/javascript</div>
+                    <div style="width:20%; float:left;"> <input type="checkbox"> image/jpeg</div>
+                    <div style="width:20%; float:left;"> <input type="checkbox"> image/gif </div>
+                </div>
+
+                <div style="height:30px;">
+                    <div style="width:20%; float:left;"> <input type="checkbox"> image/png </div>
+                    <div style="width:20%; float:left;"> <input type="checkbox"> application/x-flash</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Gzip Deflate
+                <div class="right_checkbox">
+                    <div class="onoffswitch">
+                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="gzipswitch"  @if(myProxy.contentEncoding.get=="gzip") { checked }>
+                        <label class="onoffswitch-label" for="gzipswitch">
+                            <div class="onoffswitch-inner"></div>
+                            <div class="onoffswitch-switch"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Minify</div>
+
+            <ul class="list-group">
+
+                <li class="list-group-item">
+                    <div style="height:25px;">
+                    <div style="float:left">Style Sheet Minify</div>
+                    <div class="right_checkbox">
+                        <div class="onoffswitch">
+                            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="cssminswitch" @if(myProxy.cssMinify.get==true) { checked }>
+                            <label class="onoffswitch-label" for="cssminswitch">
+                                <div class="onoffswitch-inner"></div>
+                                <div class="onoffswitch-switch"></div>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                </li>
+
+                <li class="list-group-item">
+                    <div style="height:25px;">
+                    <div style="float:left">Javascript Minify</div>
+                    <div class="right_checkbox">
+                        <div class="onoffswitch">
+                            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="jsminswitch" @if(myProxy.jsMinify.get==true) { checked }>
+                            <label class="onoffswitch-label" for="jsminswitch">
+                                <div class="onoffswitch-inner"></div>
+                                <div class="onoffswitch-switch"></div>
+                            </label>
+                        </div>
+                    </div>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+
+
+
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading">404시 이미지 대체
+                <div class="right_checkbox">
+                    <div class="onoffswitch">
+                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="notfoundswitch" @if(myProxy.replace404.get==true) { checked }>
+                        <label class="onoffswitch-label" for="notfoundswitch">
+                            <div class="onoffswitch-inner"></div>
+                            <div class="onoffswitch-switch"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Favicon
+                <div class="right_checkbox">
+                    <div class="onoffswitch">
+                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="faviconswitch" @if(myProxy.favicon.get > 0) { checked }>
+                        <label class="onoffswitch-label" for="faviconswitch">
+                            <div class="onoffswitch-inner"></div>
+                            <div class="onoffswitch-switch"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-body">
+
+                <div style="height:30px;">
+                    <div style="width:20%; float:left;"> <input type="radio" name="faviconValue" value="1" @if(myProxy.favicon.get == 1) { checked }>&nbsp;&nbsp;<img src="@routes.Assets.at("images/favicon.png")"> </div>
+                    <div style="width:20%; float:left;"> <input type="radio" name="faviconValue" value="2" @if(myProxy.favicon.get == 2) { checked }>  </div>
+                    <div style="width:20%; float:left;"> <input type="radio" name="faviconValue" value="3" @if(myProxy.favicon.get == 3) { checked }>  </div>
+                    <div style="width:20%; float:left;"> <input type="radio" name="faviconValue" value="4" @if(myProxy.favicon.get == 4) { checked }>  </div>
+                    <div style="width:20%; float:left;"> <input type="radio" name="faviconValue" value="5" @if(myProxy.favicon.get == 5) { checked }>  </div>
+                </div></div>
+
+        </div>
+
+        <div>
+            <div style="float:left">
+                <button type="button" class="btn btn-primary" onclick="projectSave();"><span class="glyphicon glyphicon-ok"></span> 저장</button>
+                <button type="button" class="btn btn-default" onclick="projectRefresh();"><span class="glyphicon glyphicon-refresh"></span> 프로젝트 새로고침</button>
+
+
+                <div class="btn-group" style="">
+
+                    <button type="button" class="btn btn-default" onclick="proxyClear();"><span class="glyphicon glyphicon-trash"></span> 프록시 캐시삭제</button>
+                    <button type="button" class="btn btn-default" onclick="proxyClear();"><span class="glyphicon glyphicon-trash"></span> CDN 캐시삭제</button>
+
+                </div>
+
+            </div>
+            <div style="float:right">
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal_Delete"><span class="glyphicon glyphicon-trash"></span> 프로젝트 삭제</button>
+                <button type="button" class="btn btn-danger" onclick="projectClear('프로젝트를 초기화 하시겠습니까?');"><span class="glyphicon glyphicon-step-backward"></span> 프로젝트 초기화</button>
+            </div>
+        </div>
+
+        <br><br>
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="modal fade" id="modal_Delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">프로젝트 삭제</h4>
+            </div>
+            <div class="modal-body">
+                정말 이 프로젝트를 삭제하시겠습니까? 프로젝트를 삭제하시려면 비밀번호를 다시 입력해주세요.<br><br>
+                <input type="password" name="pwd" id="user_pwd" class="form-control" placeholder="Password" required style="">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-danger" onclick="removeProject();">프로젝트 삭제</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+var magic = @Html(magic);
+
+$(document).ready(function() {
+
+    if(magic.rule_name){
+        if(magic.rule_name=="EnableGzipCompression") $('#gzipswitch').prop('checked', "true");
+        if(magic.rule_name=="AvoidBadRequests") $("#notfoundswitch").prop('checked', "true");
+        if(magic.rule_name=="LeverageBrowserCaching") $("#headerCache").val(259200);
+
+        setTimeout(function(){ projectSave(); },100);
+    }
+
+
+});
+
+
+
+function projectSave(){
+
+    var processOK = "@routes.Tool.saveProject(req_project_id)";
+    var title = $("#input_title").val();
+    var proxyuse = ($("#proxySwitch").is(":checked") ? 1 : 0);
+    var origin_ip = $("#input_ip").val();
+
+    if(title==""){
+         alert("프로젝트명을 입력해주세요.");
+         return;
+    }
+
+    if(proxyuse == 1 && origin_ip==""){
+        alert("프록시 사용설정시 IP 혹은 CNAME을 입력해주세요.");
+        return;
+    }
+
+    var contentEncoding = ($("#gzipswitch").is(":checked") ? "gzip" : "");
+    var jsMinify = ($("#jsminswitch").is(":checked") ? 1 : 0);
+    var cssMinify = ($("#cssminswitch").is(":checked") ? 1 : 0);
+    var replace404 = ($("#notfoundswitch").is(":checked") ? 1 : 0);
+    var favicon = ($("#faviconswitch").is(":checked") ? 1 : 0);
+    if(favicon==1) favicon = $(':radio[name="faviconValue"]:checked').val();
+    var headercacheDay = $("#headerCache").val();
+
+    var posting = $.post( processOK , {"title":title,"proxyuse":proxyuse,"origin_ip":origin_ip,"contentEncoding":contentEncoding,"jsMinify":jsMinify,"cssMinify":cssMinify,"replace404":replace404,"favicon":favicon,"headercacheDay":headercacheDay } );
+        posting.done(function( data ) {
+        if(data=="Ok") {
+             alert("프로젝트 저장이 완료되었습니다.");
+        } else {
+             alert("프로젝트 저장중 오류가 발생하였습니다.");
+        }
+    });
+
+
+
+}
+
+
+function removeProject(addString){
+
+    var pwd = $("#user_pwd").val();
+    var postURL = "@routes.Tool.removeProject(req_project_id)";
+
+    var posting = $.post( postURL , {"pwd":pwd} );
+    posting.done(function( data ) {
+        if(data=="Ok") { document.location.href = "@routes.Tool.index()"; }
+        else {
+            alert("비밀번호가 틀렸습니다.");
+        }
+    });
+
+}
+
+function projectRefresh(){
+
+    if (confirm("프로젝트를 새로고침 하시겠습니까?\n피들 웹 부스터에서 데이터를 분석하는 동안 프로젝트가 비활성화 될 수 있습니다.") == true){
+
+    }else{
+        return;
+    }
+}
+
+
+function proxyClear(){
+
+    if (confirm("프록시 캐쉬를 초기화 하시겠습니까?") == true){
+
+    }else{
+        return;
+    }
+}
+
+
+function projectClear(addString){
+    addString = "정말 "+ addString;
+    if (confirm(addString) == true){
+      projectClear(addString);
+    }else{
+        return;
+    }
+}
+
+</script>
+
+
+

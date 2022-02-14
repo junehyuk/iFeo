@@ -1,0 +1,12 @@
+<h4>Overview</h4>
+   Properly sizing images can save many bytes of data.
+
+    <p>With responsive designs, it's often necessary to use the browser to scale images.  If you are doing this, then you can safely ignore this recommendation.  However, you should still consider methods that serve a smaller image so that mobile users don't scale a desktop sized image down to mobile sizes.</p>
+
+<p></p>
+
+<h4>Details from Google</h4>
+
+<p>Sometimes you may want to display the same image in various sizes, so you will serve a single image resource and use HTML or CSS in the containing page to scale it.</p>
+
+<p>For example, you may have a 10 x 10 thumbnail version of a larger 250 x 250 image, and rather than forcing the user to download two separate files, you use markup to resize the thumbnail version. This makes sense if the actual image size matches at least one - the largest - of the instances in the page, in this case 250 x 250 pixels. However, if you serve an image that is larger than the dimensions used in all of the markup instances, you are sending unnecessary bytes over the wire. You should use an image editor to scale images to match the largest size needed in your page, and make sure that you specify those dimensions in the page as well.</p>

@@ -1,0 +1,65 @@
+<h4>Overview</h4>
+    Setting the character set at the server level reduces browser processing.
+
+<ul>
+  <li>Define the character set being used at the server for all pages</li>
+  <li>Avoid setting it in the meta http-equiv tag</li>
+  <li>Reduce page load times</li>
+  <li>Cost benefit ratio: high value</li>
+  <li>Server access needed</li>
+
+  <div class="clear text-content">
+  <div class="layout-2col-content">
+    <h4>What is a character set definition?</h4>
+
+<p>A character set is essentially a set of characters represented by numbers for a computer.  For example in the ASCII character set the numbers 0-127 are used to represent all English characters as well as special control characters.</p>
+
+
+<h4>Why is it important?</h4>
+
+<p>It's important to specify a character set in the HTTP response headers of your HTML documents to allow the browser to begin parsing HTML and executing scripts immediately.</p>
+
+<p>Without specifying a character set the browser is left to figure it out on its own which takes time and therefore negatively impacts your page load times.</p>
+
+
+<h4>Why should you avoid setting it in the meta http-equiv tag?</h4>
+
+<p>Setting the character set in the meta http-equiv tag disables the lookahead downloader in Internet Explorer 8. Disabling the lookahead downloader can substantially increase the amount of time it takes to load your page.</p>
+
+<p>Web developers should specify the CHARSET in the HTTP Content-Type response header, as this ensures that the performance benefit of the Lookahead Downloader is realized.</p>
+
+
+<h4>How to do it?</h4>
+
+<p>In order to avoid using meta tags you must set the Character Set from the Server.</p>
+
+<p>This is the most efficient method to set the character set, because you don't need to set it for every page. Set your server to send a Content-Type header for all documents it serves that are of type text/html.  For example:</p>
+
+<pre>Content-Type: text/html; charset=UTF-8</pre>
+
+<p>Charset is where you set your character type.</p>
+
+
+<h4>recommends:</h4>
+      <h5>Prefer HTTP over meta tag parameters</h5>
+
+<p>There are several ways to specify the character set for an HTML document:</p>
+
+<ul>
+<li>Server-side: You configure your web server to specify the <code>charset</code> parameter, with the correct character encoding, in the <code>Content-Type</code> header for all documents that are of type <code>text/html</code>; e.g. <code>Content-Type: text/html; charset=UTF-8</code></li>
+<li>Client-side: You include the <code>http-equiv="content"</code> attribute in the meta tag in the HTML code, and specify the charset parameter; e.g. <code>&lt;meta http-equiv="Content-Type" content="text/html;charset=utf-8"&gt;</code></li>
+</ul>
+
+<p>If possible, configure your web server to specify the character set in the HTTP headers. Some browsers (e.g. Firefox) use a shorter buffer delay before executing JavaScript if the charset is present in the header; that is, they can skip the additional buffering delay required to check the HTML markup.</p>
+
+<h5>Specify the meta tag at the top of the head section</h5>
+
+<p>If you don't control your web server configuration, and need to set the charset in the meta tag, be sure to specify the markup at the very top of the <code>&lt;head&gt;</code> section of the document. Browsers look for the charset parameter within the first 1024 bytes of the document, so to avoid performance penalties, it's crucial that the parameter appears as early as possible in the document head.</p>
+
+<h5>Always specify a content type</h5>
+
+<p>Before browsers can begin to check for a character set, they must first the determine the content type of the document being processed. If this is not specified in the HTTP header or the HTML meta tag, they will attempt to "sniff" the type, using various algorithms. This process can cause additional delays, besides representing a security vulnerability. For both performance and security reasons, you should always specify a content type for all resources (not only text/html).</p>
+
+<h5>Be sure to specify the correct character encoding</h5>
+
+<p>It's important that the character set you specify in an HTTP header or HTML meta tag match the character encoding actually used to author your HTML documents. If you specify a charset parameter in both the HTTP header and HTML meta tag, make sure they match each other. If the browser detects an incorrect or mismatched encoding, it will render the page incorrectly and/or incur additional delays while it redraws the page. For more information on valid character sets, see <a href="http://www.w3.org/TR/REC-html40/charset.html#h-5.2">Section 5.2, Character Encodings</a> in the <a href="http://www.w3.org/TR/REC-html40/">HTML 4.01 Specification</a>.</p>

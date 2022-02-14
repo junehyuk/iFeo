@@ -1,0 +1,10 @@
+<br><br>
+	리다이렉트 되는 페이지를 서버 사이드에서 캐시하여 이용자에게 최종 리소스를 바로 제공해 주므로서 리다이렉트로 인한 지연을 감소시킬 수 있습니다.<br>
+<br>
+재전송(redirects)은 301 및 302 status codes를 가지고 확인할 수 있다. 다음은 301 응답의 HTTP headers의 예이다.<br>
+HTTP/1.1 301 Moved Permanently<br>
+Location: http://example.com/newuri<br>
+Content-Type: text/html<br>
+Browser는 자동으로 경로속성에 지정된 URL의 사용자에게 넘어간다. 재전송(redirect)에 대한 모든 정보는 headers에 있다. 응답한 본문은 일반적으로 비어있지만 301과 302 응답 모두 실제로 cache되지 않는다. (Expires나 Cache-Control과 같은 추가 headers 제외) meta refresh tag와 JavaScript는 다른 URL로 사용자에게 전송되는 다른 방법이다. 그래도 반드시 재전송(redirect)을 해야 한다면, 먼저 뒤로 가기(back) 버튼이 제대로 작동하는지 확인한 후에 표준 3xx HTTP 상태 코드(codes)를 사용할 것을 권장한다.<br><br>
+가장 중요하게 기억해야 할 것은 재전송(redirects)은 사용자경험(UX)을 느리게 만든다는 것이다. 사용자와 HTML 문서 사이에 redirect를 삽입하는 것은 페이지에 있는 모든 것들을 지연시킨다. 그 이유는 HTML 문서가 도착하기 전까지는 페이지의 아무것도 출력되지 않을 수 있으며, 어떤 components도 다운로드를 시작할 수 없기 때문이다. 가장 치명적인 redirects는 자주 일어나지만 웹 개발자들은 일반적으로 그것을 인식하지 못한다는데 있다. 그것은 trailing slash(/)가 URL(반드시 1개를 가져야만 하는)로부터 빠져있을 때 발생한다. 예를 들어, http://astrology.yahoo.com/astrology/ (trailing slash 추가)로 redirect를 포함하는 301 응답에서 http://astrology.yahoo.com/astrology의 결과로 이동해 보자. 이것은 Alias, mod_rewrite, DirectorySlash 지시어를 사용함으로써 Apache에서 해결된다. (Apache handlers를 사용하는 경우)<br><br>
+오래된 웹사이트에서 새로운 웹사이트로의 접속은 redirects에 대한 일반적 사용이다. 이 외에도 웹사이트의 서로 다른 부분들을 연결하는 것이나 특정조건(browser 유형, 사용자 계정 유형 등)에 따라 사용자에게 전송하는 것도 포함된다. 두 개의 웹사이트를 연결하기 위해 redirect를 사용하는 것은 간단하면서도 추가 coding을 요구하지 않는다. Redirect는 개발자들에게 복잡성을 줄일 수 있지만, 사용자경험(UX)을 감소시킨다. Redirects 사용에 대한 다른 대안은 두 code 경로가 같은 서버에 host되는 경우, Alias와 mod-rewrite를 사용하는 것이다. 도메인 이름변경을 위해 redirects를 사용한다면 Alias 또는 mod_write를 결합하여 CNAME(DNS record: 하나의 도메인 이름을 다른 것으로 가리키는 별칭도메인을 생성)를 생성하면 된다.<br>

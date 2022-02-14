@@ -1,0 +1,21 @@
+<p>The @import method of retrieving CSS files creates some problems that affect your page speed. The largest problem is that it causes files to load sequentially (one has to wait for the other) instead of in parallel (at the same time). This wastes times and round trips and makes your web page load slower.</p>
+<h2>How to avoid css @ imports</h2>
+<p>Look in your HTML and CSS files and locate the @ import calls. You can also use the online <a href="http://www.feedthebot.com/tools/css-delivery/">CSS delivery tool</a> which will detect them.<br> They look like this and will usually be near the top of the file.</p>
+
+
+<div class="code">
+@import url("style.css")
+</div>
+
+<p>Replace those imports with the following code.</p>
+<div class="code">
+&lt;link rel="style.css" href="style.css" type="text/css"&gt;
+</div>
+<p>Make sure to replace "style.css" with the location and name of your CSS file.</p>
+<h2>Check all your CSS files</h2>
+<p>Tip: Use our <a href="http://www.feedthebot.com/tools/css-delivery/">CSS tool</a> to find out if you have @imports on your page</p>
+<p>Many websites have several CSS files (you should try to <a href="http://www.feedthebot.com/pagespeed/combine-external-css.html">combine those CSS files</a>). If you have more than one CSS file, check each file for imports.<br>If a CSS file calls another CSS file via the @ import method, it is particularly bad for page speed. This adds additional steps for the browser to load your web page, causing the browser to download, parse, and then go out and get the next CSS file before it starts displaying your page.<br>
+This can be avoided by using the link method shown above.</p>
+
+<p>It is best if no @imports are used at all</p>
+

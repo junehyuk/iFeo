@@ -1,0 +1,24 @@
+<p>When a web browser displays your webpage it has to figure out many things before it can display your content. One of the most simple and important things it does is to lay out your webpage around your images. It can only do this if it knows what size your images are.</p>
+
+
+</div><div class="unit new">
+<p>If you do not tell the browser the size of your images then it must "build" the page not once, but twice (or more times depending on how many images you have on the page). It will build it once to display all the text, and then it will wait until an image is downloaded. When one image is downloaded the browser can now determine the size of the image and will rebuild the page to wrap the text around that image. This process will happen for every image on your page.</p>
+
+<p>If you just specify the image dimensions, it will already know the size of the images and can use that information to shape the page. It won't have to rebuild the page a million times.</p>
+
+<h2>How to specify image dimensions</h2>
+
+<p>It is done by adding some code to your image tags.</p>
+<p>Here is an example image tag without image dimensions...</p>
+
+<div class="code"><p>&lt;img src="image.jpg" /&gt;</p>
+</div>
+
+<p>Here is an example image tag with image dimensions included (height and width)...</p>
+
+<div class="code"><p>&lt;img src="image.jpg" width="200" height="200" /&gt;</p>
+</div>
+
+
+<p>Adding the height and width to your images can really help your webpages load faster and look better while they are loading.</p>
+

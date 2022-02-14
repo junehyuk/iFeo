@@ -1,0 +1,13 @@
+<h4>Overview</h4>
+    It's important to serve a resource from a unique URL, to eliminate duplicate download bytes and additional RTTs.
+
+    <h4>Details from Google</h4>
+
+<p>Sometimes it's necessary to reference the same resource from multiple places in a page - images are a typical example. Even more likely is that you share the same resources across multiple pages in a site such as .css and .js files. If your pages do need to include the same resource, the resource should always be served from a consistent URL. Ensuring that one resource is always assigned a single URL has a number of benefits. It reduces the overall payload size, as the browser does not need to download additional copies of the same bytes. Also, most browsers will not issue more than one HTTP request for a single URL in one session, whether or not the resource is cacheable, so you also save additional round-trip times. It's especially important to ensure that the same resource is not served from a different hostname, to avoid the performance penalty of additional DNS lookups.</p>
+
+<p>Note that a relative URL and an absolute URL are consistent if the hostname of the absolute URL matches that of the containing document. For example, if the main page at www.example.com references resource /images/example.gif and www.example.com/images/example.gif, the URLs are consistent. However, if that page references /images/example.gif and mysite.example.com/images/example.gif, these URLs are not consistent.</p>
+
+<h4>recommends:</h4>
+      <h5>Serve shared resources from a consistent URL across all pages in a site</h5>
+
+<p>For resources that are shared across multiple pages, make sure that each reference to the same resource uses an identical URL. If a resource is shared by multiple pages/sites that link to each other, but are hosted on different domains or hostnames, it's better to serve the file from a single hostname than to re-serve it from the hostname of each parent document. In this case, the caching benefits may outweigh the DNS lookup overhead. For example, if both <code>mysite.example.com</code> and <code>yoursite.example.com</code> use the same JS file, and <code>mysite.example.com</code> links to <code>yoursite.example.com</code> (which will require a DNS lookup anyway), it makes sense to just serve the JS file from <code>mysite.example.com</code>. In this way, the file is likely to already be in the browser cache when the user goes to <code>yoursite.example.com</code>.</p>

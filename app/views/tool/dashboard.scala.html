@@ -1,0 +1,426 @@
+@(req_project_id: Int, myProject:Project)
+<script src="@routes.Assets.at("javascripts/chart/Chart.js")"></script>
+<body oncontextmenu='return false' ondragstart='return false'  onselectstart='return false'></body>
+
+<meta name = "viewport" content = "initial-scale = 1, user-scalable = no">
+
+<style type="text/css">
+
+</style>
+
+
+<div id="main_contents_large"><!--내용!-->
+<div style="width:1000px; padding-right: 20px;">
+
+    <div class="panel panel-default">
+
+        <ul class="nav nav-tabs" style="padding-top:8px; background-color:rgb(245, 245, 245);">
+
+            <li style="padding-top:10px; padding-left:15px; padding-right:15px;"><b>지역별 성능 확인하기</b></li>
+            <li class="active"><a href="#home" data-toggle="tab" onclick="locationTest(0);">Santa Clara</a></li>
+            <li><a href="#home" data-toggle="tab" onclick="locationTest(1);">Singapore</a></li>
+            <li><a href="#home" data-toggle="tab" onclick="locationTest(2);">Amsterdam</a></li>
+            <li><a href="#home" data-toggle="tab" onclick="locationTest(3);">Seoul</a></li>
+
+        </ul>
+
+    <div class="panel-body" id="localResultLoad" style="height:450px;">
+        <table cellpadding="0" cellspacing="0" width="100%" height="100%" id="loadingView">
+            <tr>
+                <td width="100%" height="100%">
+                    <p align="center">
+                        <img src="@routes.Assets.at("images/loading.gif")" width="60" height="60"><br><br><br>
+                        페이지 테스트 결과를 가져오고 있습니다. 최초 실행시 시간이 소요됩니다.
+                    </p>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+    <div class="panel-body" id="localResultView" style="height:450px; display:none;">
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="home">
+
+            <center>
+            <div style="width:930px; margin-top:20px; float:left;">
+            <div style="float:left; width:205px; height:330px; margin-right:20px; padding-left:5px; padding-top:10px;">
+                <b>속도 비교</b><br>
+                <canvas id="locationChart" height="250" width="140" style="margin-top:10px;"></canvas>
+                <div style="margin-top:-20px;">■ Before  ■ After</div>
+
+            </div>
+            <div style="border: 1px solid #dddddd; width:685px; height:300px; background-color:#f9f9f9; float:left; border-radius: 10px; padding-top:10px; overflow:hidden;">
+
+
+                <div id="videoView" style="display:none;">
+                    <div style="float:left; text-align: center; margin-left:15px;">
+                        <b>최적화 전</b><br>
+                        <video id="locationVideoBefore" autoplay width="320" width="252" style="margin-top:5px;"> </video>
+                    </div>
+
+                    <div style="float:left; text-align: center; margin-left:15px;">
+                        <b>최적화 후</b><br>
+                        <video id="locationVideoAfter" autoplay width="320" width="252" style="margin-top:5px;"> </video>
+                    </div>
+                </div>
+
+                <div id="videoLoad" style="padding:40px;">
+                    <br><br><br>웹사이트 테스트 동영상을 생성하고 있습니다.<br><br>
+                    <div class="progress progress-striped active">
+                        <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+            </div>
+            </center>
+
+            <div style="clear:both; text-align: center;">
+                <hr><b>지역별 상세 성능 확인하기</b> &nbsp;&nbsp;&nbsp;
+                <div class="btn-group" style="">
+                 <button type="button" class="btn btn-success btn-lg" onclick="detailview(1);"><span class="glyphicon glyphicon-align-left"></span> Waterfall View</button>
+                 <button type="button" class="btn btn-success btn-lg" onclick="detailview(2);"><span class="glyphicon glyphicon-signal"></span> Connection View</button>
+                 <button type="button" class="btn btn-success btn-lg" onclick="detailview(3);"><span class="glyphicon glyphicon-list"></span> Full Optimization Checklist</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+</div>
+
+
+
+
+
+<div class="modal fade" id="performanceDetail" tabindex="-1" role="dialog" style="width:100%; height:100%; overflow:hidden;" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:995px; height:calc(100% - 70px)">
+        <div class="modal-content" style="width:995px; height:100%;">
+            <div class="modal-header">
+
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <select class="form-control" id="versionControl" onChange="versionChange();" style="float:right; width:200px; margin-right:20px; margin-top:-4px;">
+                    <option value="0">After</option>
+                    <option value="1">Before</option>
+                </select>
+
+                <h4 class="modal-title" id="detailViewTitle">Side by Side Diff</h4>
+            </div>
+
+
+            <div class="modal-body" style="width:990px; height:calc(100% - 60px); overflow:scroll; overflow-x:hidden; text-align:center;">
+                <div id="RView_loading" style="height:100%;">
+
+                    <table cellpadding="0" cellspacing="0" width="100%" height="100%">
+                        <tr>
+                            <td width="100%" height="100%">
+                                <p align="center">
+
+                                    <img src="@routes.Assets.at("images/loading.gif")" width="60" height="60"><br>
+
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+                <DIV ID="RView_result">
+
+                    <div id="info_waterfall">
+                        <img src="@routes.Assets.at("images/wpt_detail_default.png")"><br>
+                        <img src="@routes.Assets.at("images/wpt_detail_waterfall.png")"><br><br>
+                    </div>
+
+                    <div id="info_connection">
+                        <img src="@routes.Assets.at("images/wpt_detail_default.png")"><br>
+                        <img src="@routes.Assets.at("images/wpt_detail_connection.png")"><br><br>
+                    </div>
+
+
+                    <img src="" width="930" id="detailViewContent" onload="loadImage()">
+                </DIV>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@if(myProject.proxyuse.get==1) {
+
+<div class="panel panel-default">
+    <div class="panel-heading"><b>사용현황</b></div>
+    <div class="panel-body">
+
+        <canvas id="traficChart" height="300" width="930"></canvas><br><br><br>
+
+        <div style="width:920px; margin-left:15px;">
+            트래픽 사용량 (CDN, 프록시서버)<br>
+            <div class="progress progress-striped active">
+                <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                    <span class="sr-only">45% Complete</span>
+                </div>
+            </div>
+
+            하드디스크 사용량 <br>
+            <div class="progress progress-striped active">
+                <div class="progress-bar progress-bar-success" style="width: 35%">
+                    <span class="sr-only">35% Complete (success)</span>
+                </div>
+                <div class="progress-bar progress-bar-warning" style="width: 20%">
+                    <span class="sr-only">20% Complete (warning)</span>
+                </div>
+                <div class="progress-bar progress-bar-danger" style="width: 10%">
+                    <span class="sr-only">10% Complete (danger)</span>
+                </div>
+        </div>
+
+        </div>
+    </div>
+</div>
+
+}
+
+
+
+
+
+</div> <!--내용끝!-->
+</div>
+
+
+
+
+
+<script type="text/javascript">
+
+var wpt_before = "@Some(myProject.wptTestId)";
+wpt_before = JSON.parse(wpt_before.replace(/&quot;/g,'"'));
+
+var wpt_after = "@Some(myProject.simulTestId)";
+wpt_after = JSON.parse(wpt_after.replace(/&quot;/g,'"'));
+
+
+//////////////////////////////////////////////////
+// 일별 사용현황, 트래픽 사용현황 표시 부분
+//////////////////////////////////////////////////
+
+// 지역 성능비교 데이터
+var locationChartData = {
+    labels : [""],
+    datasets : [{
+     fillColor : "rgba(220,220,220,0.5)",
+     strokeColor : "rgba(220,220,220,1)"
+     },{
+      fillColor : "rgba(151,187,205,0.5)",
+      strokeColor : "rgba(151,187,205,1)"
+    }]
+}
+
+// 지역별 성능 출력부분
+var localnow = 0;
+var webpagetest_url = "http://www.webpagetest.org/results/";
+var locationInfo = "LosAngeles:Chrome";
+
+function xmlParser_fullyLoaded(filename){
+
+    var canvas = $('#locationChart')[0]; // or document.getElementById('canvas');
+    canvas.width =140; canvas.height =250;
+
+    $("#localResultLoad" ).show();
+    $("#localResultView" ).hide();
+
+    $("#videoLoad" ).show();
+    $("#videoView" ).hide();
+
+    $.ajax({
+    type: "GET",
+    url: "/webpagetest/"+filename,
+    dataType: "xml",
+    success: function(xml) {
+    $(xml).find('average').each(function(deep_i,deep_j)
+    {
+        $(deep_j).find('firstView').each(function(i,j)
+        {
+            locationChartData.datasets[0].data = [ $(j).find("fullyLoaded").text()*0.001 ,0.0];
+        });
+
+        $(deep_j).find('repeatView').each(function(i,j)
+        {
+            locationChartData.datasets[1].data = [ $(j).find("fullyLoaded").text()*0.001 ];
+        });
+
+        $("#localResultLoad" ).hide();
+        $("#localResultView" ).show();
+        var myLocationChartLine = new Chart(document.getElementById("locationChart").getContext("2d")).Bar(locationChartData);
+
+        updateVideo();
+
+    });
+    }});
+
+}
+
+function updateVideo(){
+
+    $.get( "/isvideo/"+ wpt_after[locationInfo], function( data ) {
+    if(data=="true"){
+
+    var videoUrlBefore, videoUrlAfter;
+    videoUrlBefore = "/video/"+wpt_before[locationInfo]+".mp4";
+    videoUrlAfter = "/video/"+wpt_after[locationInfo]+".mp4";
+
+    $('#locationVideoBefore')[0].src = videoUrlBefore;
+    $('#locationVideoAfter' )[0].src = videoUrlAfter;
+
+    $( "#videoLoad" ).hide ( ) ;
+    $( "#videoView" ).show ( ) ;
+    } else if(data=="false") {
+        setTimeout(function(){updateVideo();},3000);
+    }
+
+    });
+
+
+}
+
+
+function locationTest(localno){
+
+    localnow = localno;
+    switch (localno){
+        case 0:
+            locationInfo = "LosAngeles:IE%2010";
+        break;
+        case 1:
+            locationInfo = "Singapore_IE8";
+        break;
+        case 2:
+            locationInfo = "Amsterdam_IISpeed:Chrome";
+        break;
+        case 3:
+            locationInfo = "Seoul:Chrome";
+        break;
+    }
+    xmlParser_fullyLoaded(wpt_before[locationInfo]);
+
+}
+
+function versionChange(){
+
+    var index = $("#versionControl option").index($("#versionControl option:selected"));
+    detailviewDrawer();
+
+}
+
+function replaceWPTURL(string){
+
+    var newstring = "";
+
+    newstring += string.substring(0,2) + "/";
+    newstring += string.substring(2,4) + "/";
+    newstring += string.substring(4,6);
+
+    string = string.substring(6);
+    newstring += string.split("_").join("/");
+    return newstring;
+
+}
+
+
+function detailviewDrawer(){
+    var drawWPTLOCAL = "";
+
+    if($("#versionControl").val()==1) drawWPTLOCAL = wpt_before[locationInfo];
+    else drawWPTLOCAL = wpt_after[locationInfo];
+    drawWPTLOCAL = replaceWPTURL(drawWPTLOCAL);
+
+    $('#info_waterfall').hide();
+    $('#info_connection').hide();
+
+    $('#RView_loading').show();
+    $('#RView_result').hide();
+
+    if(detailmenuno==1) $('#info_waterfall').show();
+    if(detailmenuno==2) $('#info_connection').show();
+
+    if(detailmenuno==1) $('#detailViewTitle').text("Waterfall View");
+    if(detailmenuno==2) $('#detailViewTitle').text("Connection View");
+    if(detailmenuno==3) $('#detailViewTitle').text("Full Optimization Checklist");
+
+    if(detailmenuno==1) $('#detailViewContent').attr("src",webpagetest_url+drawWPTLOCAL+"/1_waterfall.png");
+    if(detailmenuno==2) $('#detailViewContent').attr("src",webpagetest_url+drawWPTLOCAL+"/1_connection.png");
+    if(detailmenuno==3) $('#detailViewContent').attr("src",webpagetest_url+drawWPTLOCAL+"/1_optimization.png");
+
+}
+
+var detailmenuno;
+function detailview(menuno){
+    // menuno = 1 Waterfall
+    // menuno = 2 Connection
+    // menuno = 3 Full Optimization Checklist
+    detailmenuno = menuno;
+
+    $("#versionControl option:eq(0)").attr("selected", "selected");
+    detailviewDrawer();
+    $('#performanceDetail').modal("show");
+}
+function loadImage()
+{
+    $('#RView_loading').hide();
+    $('#RView_result').show();
+}
+
+$(document).ready( function(){
+    locationTest(0);
+
+});
+
+
+//////////////////////////////////////////////////
+// 일별 사용현황, 트래픽 사용현황 표시 부분
+//////////////////////////////////////////////////
+
+var lineChartData = {
+    labels : ["30일","31일","1일","2일","3일","4일","5일","6일","7일","8일"],
+    datasets : [
+        {
+            fillColor : "rgba(79,147,204,1)",
+            strokeColor : "rgba(48,128,195,1)",
+            pointColor : "rgba(48,128,195,1)",
+            pointStrokeColor : "#fff",
+            data : [65,59,90,81,56,55,40,13,42,12]
+        },{
+            fillColor : "rgba(100,189,108,1)",
+            strokeColor : "rgba(73,178,82,1)",
+            pointColor : "rgba(73,178,82,1)",
+            pointStrokeColor : "#fff",
+            data : [30,27,45,40,25,24,20,7,18,6]
+          },{
+            fillColor : "rgba(244,176,98,1)",
+            strokeColor : "rgba(242,162,70,1)",
+            pointColor : "rgba(242,162,70,1)",
+            pointStrokeColor : "#fff",
+            data : [20,21,25,23,19,18,13,4,14,5]
+            },{
+            fillColor : "rgba(224,95,98,1)",
+            strokeColor : "rgba(218,67,70,1)",
+            pointColor : "rgba(218,67,70,1)",
+            pointStrokeColor : "#fff",
+            data : [15,11,20,18,12,11,7,2,10,1]
+            }]
+    }
+var myLine = new Chart(document.getElementById("traficChart").getContext("2d")).Line(lineChartData);
+
+
+</script>

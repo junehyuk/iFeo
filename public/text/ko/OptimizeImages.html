@@ -1,0 +1,17 @@
+  <br>
+  이미지 최적화<br>
+<br>
+  이미지의 형식을 적절하게 지정하고 압축하면 데이터 용량을 크게 줄일 수 있습니다.<br>
+<br>
+  디자이너가 웹페이지에 대한 이미지 생성을 완료하면, 웹서버에 이미지들을 올리기 전에(FTP) 확인할 수 있는 몇 가지 것들이 존재한다.<br>
+  - GIFs를 체크하고 이미지 색상들의 숫자에 상응하는 팔레트 크기를 사용하는지 확인해라. Imagemagick를 이용하면 identify -verbose image.gif를 사용해서 확인하기가 쉽다.<br>
+  팔레트에서 4가지 색상과 256 색상 슬롯(slot)을 사용하는 이미지를 보면 개선의 여지가 있다.<br>
+  - GIFs를 PNGs로 변환해보고, 저장이 되었는지 확인해라. 개발자들은 종종 browsers에서의 제한된 지원으로 인해 PNGs의 사용을 망설이지만, 이것은 이미 과거의 얘기이다. 유일한 진짜 문제는 PNGs 진짜 색상의 알파투명도이지만, GIFs는 진짜 색상이 아니며 다양한 투명이미지 또한 지원하지 않는다. 그러므로 GIF가 할 수 있는 것들은, 팔레트 PNG(PNG8) 또한 할 수 있다. (애니메이션 제외). 이 간단한 imagemagick 명령은 PNGs를 안전하게 사용할 수 있게 한다.<br>
+  convert image.gif image.png<br>
+  우리가 말하는 것은 PiNG에게 한 번 기회를 주자는 것이다.<br>
+  - 모든 PNGs에서 pngcrush(또는 최적화된 다른 PNG tool)를 실행하라<br>
+  ex) pngcrush image.png -rem alla -reduce -brute result.png<br>
+  - 모든 JPEGs에서 jpegtran을 실행하라. 이 도구(tool)는 회전(rotation)과 같이 손실 없는 JPEG 작업을 수행하고 최적화를 위한 사용이 가능하며, 이미지들로부터의 다른 쓸모 없는 정보(EXIF 정보와 같은)와 코멘트(commnets)를 제거할 수 있다.<br>
+  jpegtran -copy none -optimize -perfect src.jpg dest.jpg<br>
+<br>
+<br>

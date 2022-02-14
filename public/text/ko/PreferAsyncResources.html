@@ -1,0 +1,28 @@
+	<br><br><br>
+
+	스크립트가 비동기적으로 로드된다면, HTML 렌더링을에 지체되지 않고 바로 이용되므로써 웹페이지 부하를 줄일 수 있습니다.<br><br>
+
+<br><br>
+
+<br>
+
+<br>
+
+인용된 Ajax의 장점 중 하나는 백엔드(backend)의 웹서버로부터 정보를 비동기식으로 요청함으로써 사용자에게 즉각적인 피드백을 제공한다는 것이다. 그러나 Ajax를 사용하면 사용자는 반환을 위해 비동기의 JavaScript와 XML 응답들을 기다리며 시간을 낭비하지 않을 것이라는 것을 보장할 수 없다. 여러 애플리케이션에서 Ajax가 어떻게 사용되는지에 따라 사용자가 기다림을 지속할 것인지가 결정된다. 예를 들어, 웹기반의 이메일 클라이언트에서 사용자는 그들의 검색 기준에 일치하는 모든 이메일 메시지들을 찾기 위해 Ajax 요청들에 대한 결과값을 기다리게 될 것이다. “asynchronous(비동기의)”이란 “instantaneous(즉시 일어나는)”을 의미하지 않는다.<br>
+
+성능향상을 위해 이런 Ajax 응답들을 최적화하는 것은 중요하다. “Add an Expires or a Cache-Control Header”에서 다뤘듯이(앞부분 참고), Ajax 성능을 향상시키기 위한 가장 중요한 방법은 응답들이 cacheable하도록 만드는 것이다. 다른 규칙들도 Ajax에 적용된다.<br><br>
+
+Gzip Components<br>
+
+Reduce DNS Lookups<br>
+
+Minify JavaScript<br>
+
+Avoid Redirects<br>
+
+Configure ETags<br><br>
+
+예를 들어 살펴보자면, 웹 2.0 이메일 클라이언트는 자동완성(autocompletion) 기능에 대해 사용자의 주소록을 다운로드하기 위해 Ajax를 사용할지도 모른다. 만약 사용자가 이메일 웹 애플리케이션을 사용한 이후 주소록을 수정하지 않았다면, Ajax 응답이 미래 시점의 Expires 또는 Cache-Control header로 cacheable하게 만들어진 경우에 한해 이전 주소록 응답은 cache로부터 읽어올 수 있을 것이다. Brower는 언제 이전에 cache된 주소록 응답을 사용할 지, 아니면 새로운 주소록을 요청할 지 반드시 통보되어야 한다. 이것은 마지막으로 사용자가 주소록을 수정한 것을 나타내는 주소록 Ajax URL에 timestamp를 추가하여 수행할 수 있다. (ex. &t=1190241612) 만약 주소록이 마지막 다운로드 이후 수정되지 않았다면, timestamp는 동일하며 주소록은 별도의 HTTP roundtrip이 제거된 browser의 cache로부터 불러올 수 있을 것이다. 만약 사용자가 주소록을 수정했다면, timestamp는 새로운 URL이 저장(cache)된 응답과 일치하지 않는다는 것을 확신하고, browser는 업데이트된 주소록 항목을 요청할 것이다.<br>
+
+비록 Ajax 응답들이 동적으로 생성되고 오직 한 명의 사용자에게 적용될지라도, 그들(Ajax 응답들)은 여전히 cache될 수 있다. 이렇게 하면 웹 2.0 애플리케이션을 빠르게 만들 수 있을 것이다.<br>
+

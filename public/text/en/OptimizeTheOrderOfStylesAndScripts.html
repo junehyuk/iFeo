@@ -1,0 +1,16 @@
+<h4>Overview</h4>
+    Correctly ordering external stylesheets and external and inline scripts enables better parallelization of downloads and speeds up browser rendering time.
+
+    <h4>Details from Google</h4>
+
+<p>Because JavaScript code can alter the content and layout of a web page, the browser delays rendering any content that follows a script tag until that script has been downloaded, parsed and executed. However, more importantly for round-trip times, many browsers block the <em>downloading</em> of resources referenced in the document after scripts until those scripts are downloaded and executed. On the other hand, if other files are already in the process of being downloaded when a JS file is referenced, the JS file is downloaded in parallel with them.</p>
+
+
+<h4>recommends:</h4>
+      <h5>Put external scripts after external stylesheets if possible</h5>
+
+<p>Browsers execute stylesheets and scripts in the order in which they appear in the document. If the JS code has no dependencies on the CSS files, you can move the CSS files before the JS files. If the JS code does depend on the CSS contained in an external file - for example, styles that are needed for output you are writing to the document in the JS code - this isn't possible.</p>
+
+<h5>Put inline scripts after other resources if possible</h5>
+
+<p>Putting inline scripts after all other resources prevents blocking of other downloads, and it also enables progressive rendering. However, if those "other resources" are external JS files on which the inline scripts depend, this might not be possible. In this case, it's best to move the inline scripts before the CSS files.</p>

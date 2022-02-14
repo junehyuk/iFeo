@@ -1,0 +1,14 @@
+<h4>Overview</h4>
+    Moving inline style blocks and <code>&lt;link&gt;</code> elements from the document body to the document head improves rendering performance.
+
+
+
+    <h4>Details from Google</h4>
+
+<p>Specifying external stylesheets and inline style blocks in the body of an HTML document can negatively affect the browser's rendering performance. Browsers block rendering a web page until all external stylesheets have been downloaded. Inline style blocks (specified with the &lt;style&gt; tag) can cause reflows and shifting of content. Therefore, it's important to put references to external stylesheets, as well as inline style blocks, in the head of the page. By ensuring that stylesheets are downloaded and parsed first, you can allow the browser to progressively render the page.</p>
+
+
+<h4>recommends:</h4>
+      <ul>
+  <li>As required by the HTML 4.01 Specification (<a href="http://www.w3.org/TR/html4/struct/links.html#h-12.3">section 12.3</a>), always put external stylesheets in the <code>&lt;head&gt;</code> section using the in the <code>&lt;link&gt;</code> tag. Don't use <code>@import</code>. Also make sure that you specify the stylesheets in the correct order with respect to scripts.</li>
+<li>Put <code>&lt;style&gt;</code> blocks in the <code>&lt;head&gt;</code> section.</li>
